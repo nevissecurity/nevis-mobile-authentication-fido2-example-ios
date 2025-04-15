@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>baseUrl</key>
+	<string>https://reference-dev-952a78.mauth.nevis.cloud</string>
+	<key>startEnrollPath</key>
+	<string>api/v1/users/enroll</string>
+	<key>completeEnrollPath</key>
+	<string>_app/attestation/result</string>
+	<key>startAuthenticatePath</key>
+	<string>api/v1/approval</string>
+	<key>completeAuthenticatePath</key>
+	<string>_app/assertion/result</string>
+</dict>
+</plist>
