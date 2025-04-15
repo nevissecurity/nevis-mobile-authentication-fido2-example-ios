@@ -9,9 +9,9 @@ import SwiftUI
 
 @main
 struct FIDO2App: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-    }
+	var body: some Scene {
+		WindowGroup {
+			HomeScreenView()
+		}
+	}
 }
