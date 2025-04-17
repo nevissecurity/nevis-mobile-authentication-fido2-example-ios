@@ -1,12 +1,15 @@
 //
-// FIDO2 PoC
+// FIDO2 Example App
 //
-// Copyright © 2025 NEVIS. All rights reserved.
+// Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
+import AuthenticationServices
 import Combine
-import Foundation
 
 protocol Fido2Repository {
-	func enroll(username: String) -> AnyPublisher<AsAuthorizationType, Error>
+	func startRegistration(username: String) -> AnyPublisher<StartAuthorizationResponse, AppError>
+	func completeRegistration(username: String, statusToken: String, asResult: ASAuthorizationPlatformPublicKeyCredentialRegistration) -> AnyPublisher<(), AppError>
+	func startApproval(username: String?) -> AnyPublisher<StartAuthorizationResponse, AppError>
+	func completeApproval(statusToken: String, asResult: ASAuthorizationPlatformPublicKeyCredentialAssertion) -> AnyPublisher<(), AppError>
 }

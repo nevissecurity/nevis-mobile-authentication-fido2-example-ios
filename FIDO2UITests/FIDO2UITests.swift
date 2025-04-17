@@ -1,14 +1,12 @@
 //
-// FIDO2 PoC
+// FIDO2 Example App
 //
-// Copyright © 2025 NEVIS. All rights reserved.
+// Copyright © 2025 Nevis Security AG. All rights reserved.
 //
-
 
 import XCTest
 
 final class FIDO2UITests: XCTestCase {
-
 	override func setUpWithError() throws {
 		// Put setup code here. This method is called before the invocation of each test method in the class.
 
