@@ -1,13 +1,11 @@
 //
-// FIDO2 PoC
+// FIDO2 Example App
 //
-// Copyright © 2025 NEVIS. All rights reserved.
+// Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
 import Combine
 
 protocol ConfigurationLoader {
-	static var shared: ConfigurationLoader { get }
-
-	func get() async throws -> AppConfiguration
+	var config: AppConfiguration { get throws }
 }

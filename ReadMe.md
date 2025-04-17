@@ -1,7 +1,7 @@
 //
-// FIDO2 PoC
+// FIDO2 Example App
 //
-// Copyright © 2025 NEVIS. All rights reserved.
+// Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
 # ReadMe
@@ -10,7 +10,10 @@
 
 - Moya
 - Combine
+- Swinject
+- SwinjectAutoregistration
 - Swift Package Manager
+- Swiftformat
 
 - iOS 16.0
 - Xcode 16

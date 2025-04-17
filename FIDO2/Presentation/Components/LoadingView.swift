@@ -1,19 +1,19 @@
 //
-// FIDO2 PoC
+// FIDO2 Example App
 //
-// Copyright © 2025 NEVIS. All rights reserved.
+// Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
 
 /// A view that displays a loading indicator over the content
 struct LoadingView<Content>: View where Content: View {
-	// MARK: - Properties
+	// MARK: Properties
 
 	@Binding var isShowing: Bool
 	var content: () -> Content
 
-	// MARK: - Body
+	// MARK: Body
 
 	var body: some View {
 		GeometryReader { geometry in
@@ -27,13 +27,14 @@ struct LoadingView<Content>: View where Content: View {
 					ProgressView()
 				}
 				.frame(width: geometry.size.width / 2,
-					   height: geometry.size.height / 5)
+				       height: geometry.size.height / 5)
 				.background(Color.secondary.colorInvert())
-				.foregroundColor(Color.primary)
+				.foregroundColor(.primary)
 				.cornerRadius(20)
 				.opacity(isShowing ? 1 : 0)
 			}
 		}
+		.animation(.easeInOut, value: isShowing)
 	}
 }
 
@@ -47,4 +48,3 @@ struct LoadingView<Content>: View where Content: View {
 //			.frame(maxWidth: .infinity, maxHeight: .infinity)
 //	}
 }
-
