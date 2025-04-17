@@ -1,81 +1,157 @@
 //
-// FIDO2 PoC
+// FIDO2 Example App
 //
-// Copyright © 2025 NEVIS. All rights reserved.
+// Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
+import AuthenticationServices
 import Combine
-import Moya
-import Foundation
+import SwiftUI
 
 final class HomeScreenViewModel: ObservableObject {
 	@Published var isLoading = false
-	@Published var errorTitle: String?
-	@Published var errorMessage: String?
-	@Published var isEnrollSuccessful: Bool = false
-	@Published var appConfiguration: AppConfiguration?
+	@Published var isAutoFillAssistedReady = false
+	@Published private(set) var message: HomeScreenMessage?
+	@Published private(set) var appConfiguration: AppConfiguration?
 	@Published var username: String = ""
+	@Published var buttons: [HomeScreenViewModel.ButtonType] = [
+		.register,
+		.authenticate,
+		.authenticateUsernameless,
+	]
 
 	private var cancellables: Set<AnyCancellable> = []
-	private let enrollUseCase: EnrollUseCase
+	private let authorizationService: AuthorizationService
+	private let startAuthorizationUseCase: StartAuthorizationUseCase
+	private let completeAuthorizationUseCase: CompleteAuthorizationUseCase
 
-	init(enrollUseCase: EnrollUseCase? = nil) {
-		self.enrollUseCase = enrollUseCase ?? {
-			// TODO: Replace with actual token retrieval logic
-			let tempToken = "<insert_token_here>"
-			let authPlugin = AccessTokenPlugin { _ in tempToken }
-			let loggerConfig = NetworkLoggerPlugin.Configuration(logOptions: .verbose)
-			let networkLogger = NetworkLoggerPlugin(configuration: loggerConfig)
-			let provider = MoyaProvider<Fireball>(plugins: [authPlugin, networkLogger])
-			return EnrollUseCaseImpl(fido2Repository: Fido2RepositoryImpl(fireballDataSource: FireballDataSource(provider: provider), fido2AuthenticationManager: Fido2AuthenticationManagerImpl()))
-		}()
+	init(configurationLoader: ConfigurationLoader, authorizationService: AuthorizationService, startAuthorizationUseCase: StartAuthorizationUseCase, completeAuthorizationUseCase: CompleteAuthorizationUseCase) {
+		self.authorizationService = authorizationService
+		self.startAuthorizationUseCase = startAuthorizationUseCase
+		self.completeAuthorizationUseCase = completeAuthorizationUseCase
+
+		loadConfiguration(configurationLoader)
+		subscribeToAuthorizationService()
+		startAutoFillAssistedAuthorization()
 	}
 
-	func loadConfiguration() {
-		isLoading = true
-		_Concurrency.Task {
-			do {
-				let config = try await ConfigurationLoaderImpl.shared.get()
-				await MainActor.run {
-					self.appConfiguration = config
-				}
-				// TODO find better place for this
-				Fireball.appConfig = appConfiguration
-				await MainActor.run {
-					self.isLoading = false
-				}
-			} catch {
-				await MainActor.run {
-					self.isLoading = false
-				}
-				print("Error loading configuration: \(error)")
-				self.errorTitle = "Configuration Error"
-				self.errorMessage = error.localizedDescription
-			}
+	private func loadConfiguration(_ configurationLoader: ConfigurationLoader) {
+		do {
+			appConfiguration = try configurationLoader.config
+		}
+		catch {
+			setMessage(.error, title: "Configuration error", details: error.localizedDescription)
 		}
 	}
 
-	func register() {
+	func startAuthorization(_ buttonType: ButtonType) {
+		guard let authorizationRequest = authorizationRequest(by: buttonType) else { return }
+		clearMessage()
 		isLoading = true
-		enrollUseCase.execute(username: username)
+		startAuthorizationUseCase.execute(authorizationRequest)
 			.receive(on: DispatchQueue.main)
-			.sink(receiveCompletion: { [weak self] completion in
-				self?.isLoading = false
-				if case .failure(let error) = completion {
-					print("Error during enrollment: \(error)")
-					self?.errorTitle = "Enrollment Error"
-					self?.errorMessage = error.localizedDescription
+			.sink(
+				receiveCompletion: { [weak self] completion in
+					if case let .failure(error) = completion {
+						self?.setMessage(.error, title: "Starting authorization failed", details: error.localizedDescription)
+						self?.startAutoFillAssistedAuthorization()
+					}
+				},
+				receiveValue: { [weak self] startAuthorizationResponse in
+					self?.authorizationService.start(startAuthorizationResponse, isAutoFillAssisted: false)
 				}
-			}, receiveValue: { result in
-				switch result {
-				case .credentialAssertion:
-					print("Login successful")
-				case .credentialRegistration:
-					print("Registration successful")
-				}
-			})
+			)
 			.store(in: &cancellables)
 	}
 
-	func authenticate() {}
+	private func startAutoFillAssistedAuthorization() {
+		isLoading = false
+		isAutoFillAssistedReady = false
+		startAuthorizationUseCase.execute(.credentialAssertion())
+			.sink(
+				receiveCompletion: { _ in },
+				receiveValue: { [weak self] startAuthorizationResponse in
+					guard let self else { return }
+					authorizationService.start(startAuthorizationResponse, isAutoFillAssisted: true)
+					isAutoFillAssistedReady = true
+				}
+			)
+			.store(in: &cancellables)
+	}
+
+	private func completeAuthorization(_ request: CompleteAuthorizationRequest) {
+		isLoading = true
+		completeAuthorizationUseCase.execute(request)
+			.receive(on: DispatchQueue.main)
+			.sink(
+				receiveCompletion: { [weak self] completion in
+					if case let .failure(error) = completion {
+						self?.setMessage(.error, title: "Completing authorization failed", details: error.localizedDescription)
+					}
+					self?.startAutoFillAssistedAuthorization()
+				},
+				receiveValue: { [weak self] in
+					self?.setMessage(.success, title: "Authorization successfully completed")
+				}
+			)
+			.store(in: &cancellables)
+	}
+}
+
+// MARK: - Message
+
+extension HomeScreenViewModel {
+	func setMessage(_ messageType: HomeScreenMessage.MessageType = .success, title: String, details: String? = nil) {
+		print("\(title)\(details != nil ? ": \(details!)" : "")")
+
+		message = HomeScreenMessage(
+			type: messageType,
+			title: title,
+			details: details,
+		)
+
+		isLoading = false
+	}
+
+	func clearMessage() {
+		message = nil
+	}
+}
+
+// MARK: - Authorization requests
+
+private extension HomeScreenViewModel {
+	func authorizationRequest(by buttonType: ButtonType) -> StartAuthorizationRequest? {
+		switch (buttonType, username.isEmpty) {
+		case (.register, false):
+			.credentialRegistration(username: username)
+		case (.authenticate, false):
+			.credentialAssertion(username: username)
+		case (.authenticateUsernameless, _):
+			.credentialAssertion()
+		default:
+			nil
+		}
+	}
+}
+
+// MARK: - Subscribing to Authorizations Service
+
+private extension HomeScreenViewModel {
+	func subscribeToAuthorizationService() {
+		authorizationService.onComplete
+			.sink { [weak self] result in
+				switch result {
+				case let .success(authorization):
+					self?.completeAuthorization(authorization)
+				case let .failure(error):
+					if case let .canceled(isAutoFillAssisted) = error, isAutoFillAssisted {
+						return
+					}
+					self?.setMessage(.error, title: "Authorization error", details: error.localizedDescription)
+					self?.startAutoFillAssistedAuthorization()
+				}
+			}
+			.store(in: &cancellables)
+	}
 }

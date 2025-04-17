@@ -1,26 +1,32 @@
 //
-// FIDO2 PoC
+// FIDO2 Example App
 //
-// Copyright © 2025 NEVIS. All rights reserved.
+// Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
+import Foundation
+
 /// Object that contains the configuration for the app.
-struct AppConfiguration: Codable {
-	let baseUrl: String
-	let startEnrollPath: String
-	let completeEnrollPath: String
-	let startAuthenticatePath: String
-	let completeAuthenticatePath: String
+struct AppConfiguration: Codable, Sendable {
+	let host: String
+	let accessToken: String
 }
+
+// MARK: - Helper
+
+extension AppConfiguration {
+	var baseUrl: URL? {
+		URL(string: "https://\(host)/")
+	}
+}
+
+// MARK: - Preview
 
 extension AppConfiguration {
 	static var preview: AppConfiguration {
-		return AppConfiguration(
-			baseUrl: "https://test.com",
-			startEnrollPath: "start/enrollment",
-			completeEnrollPath: "complete/enroll",
-			startAuthenticatePath: "start/authenticate",
-			completeAuthenticatePath: "complete/authenticate"
+		AppConfiguration(
+			host: "test.com",
+			accessToken: ""
 		)
 	}
 }

@@ -1,53 +1,40 @@
 //
-// FIDO2 PoC
+// FIDO2 Example App
 //
-// Copyright © 2025 NEVIS. All rights reserved.
+// Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
-import Combine
 import Foundation
 
-class ConfigurationLoaderImpl: ConfigurationLoader {
-	static var shared: ConfigurationLoader = ConfigurationLoaderImpl() // Singleton instance for convenience.
+final class ConfigurationLoaderImpl {
+	private(set) var appConfig: AppConfiguration?
+}
 
-	private var config: AppConfiguration?
-
-	/// Asynchronously retrieves the configuration
-	func get() async throws -> AppConfiguration {
-		if let config = config {
-			return config
-		} else {
-			return try await load()
+extension ConfigurationLoaderImpl: ConfigurationLoader {
+	var config: AppConfiguration {
+		get throws {
+			guard let appConfig else {
+				let appConfig = try read()
+				self.appConfig = appConfig
+				return appConfig
+			}
+			return appConfig
 		}
 	}
 }
 
-extension ConfigurationLoaderImpl {
+private extension ConfigurationLoaderImpl {
 	/// Asynchronously loads the configuration from the app bundle's Resources.
 	/// - Returns: An instance of `AppConfiguration` decoded from the plist.
-	func load() async throws -> AppConfiguration {
+	func read() throws -> AppConfiguration {
 		// Locate the configuration file in the app bundle.
 		guard let url = Bundle.main.url(forResource: "Configuration", withExtension: "plist") else {
-			throw NSError(domain: "ConfigLoader",
-						  code: 404,
-						  userInfo: [NSLocalizedDescriptionKey: "Configuration file not found in app bundle."])
+			throw URLError(.fileDoesNotExist, userInfo: [NSLocalizedDescriptionKey: "Configuration file not found in app bundle."])
 		}
 
-		// Read the data asynchronously using a background thread.
-		let data: Data = try await withCheckedThrowingContinuation { continuation in
-			DispatchQueue.global(qos: .background).async {
-				do {
-					let data = try Data(contentsOf: url)
-					continuation.resume(returning: data)
-				} catch {
-					continuation.resume(throwing: error)
-				}
-			}
-		}
+		let data: Data = try Data(contentsOf: url)
 
 		// Decode the data using PropertyListDecoder.
-		let config = try PropertyListDecoder().decode(AppConfiguration.self, from: data)
-		self.config = config // Cache the loaded configuration for future access.
-		return config
+		return try PropertyListDecoder().decode(AppConfiguration.self, from: data)
 	}
 }

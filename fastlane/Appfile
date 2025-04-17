@@ -1,5 +1,5 @@
-app_identifier("ch.nevis.mobileauthencication.poc.fido2") # The bundle identifier of your app
-#apple_id("daniel.toth@nevis-security.com") # Your Apple Developer Portal username
+app_identifier("ch.nevis.mobile.authentication.fido2.example") # The bundle identifier of your app
+#apple_id("<username>") # Your Apple Developer Portal username
 
 itc_team_id("120957956") # App Store Connect Team ID
 team_id("U8KPBF668H") # Developer Portal Team ID

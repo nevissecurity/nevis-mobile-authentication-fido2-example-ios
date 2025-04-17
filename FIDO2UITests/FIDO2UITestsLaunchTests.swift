@@ -1,14 +1,12 @@
 //
-// FIDO2 PoC
+// FIDO2 Example App
 //
-// Copyright © 2025 NEVIS. All rights reserved.
+// Copyright © 2025 Nevis Security AG. All rights reserved.
 //
-
 
 import XCTest
 
 final class FIDO2UITestsLaunchTests: XCTestCase {
-
 	override class var runsForEachTargetApplicationUIConfiguration: Bool {
 		true
 	}
