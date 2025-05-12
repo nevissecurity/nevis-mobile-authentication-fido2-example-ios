@@ -12,44 +12,33 @@ struct HomeScreenView: View {
 		case username
 	}
 
+	// MARK: Properties
+
 	@StateObject private var viewModel = dependencyContainer ~> HomeScreenViewModel.self
 	@FocusState private var focusedField: FocusedField?
+	@State private var expandedSectionId: String? = "register"
+
+	// MARK: Body
 
 	var body: some View {
 		LoadingView(isShowing: $viewModel.isLoading) {
 			VStack {
-				Text("FIDO 2 Example")
-					.font(.title)
-					.padding(.bottom, 30)
+				ScrollView {
+					Text("FIDO 2 Example")
+						.font(.title)
+						.padding(.bottom, 30)
 
-				Text("Username")
-					.frame(maxWidth: .infinity, alignment: .leading)
-					.font(.subheadline)
-				TextField("Username", text: $viewModel.username, prompt: Text("Enter username"))
-					.textContentType(.username)
-					.textInputAutocapitalization(.never)
-					.disableAutocorrection(true)
-					.textFieldStyle(.roundedBorder)
-					.focused($focusedField, equals: .username)
-					.overlay {
-						HStack {
-							Spacer()
-							Image(systemName: "person.badge.key")
-								.resizable()
-								.frame(width: 20, height: 20)
-								.foregroundColor(.accentColor)
-								.opacity(viewModel.isAutoFillAssistedReady ? 1 : 0)
-								.padding(.trailing, 10)
-								.animation(.easeInOut, value: viewModel.isAutoFillAssistedReady)
-						}
-					}
-					.padding(.bottom, 20)
+					usernameField
+					fido2Options
+					buttons
 
-				buttons
-				message
-					.animation(.easeInOut, value: viewModel.message == nil)
-				Spacer()
-				appConfiguration
+					Spacer()
+					message
+						.animation(.easeInOut, value: viewModel.message == nil)
+
+					Spacer()
+					appConfiguration
+				}
 			}
 			.padding()
 		}
@@ -59,6 +48,97 @@ struct HomeScreenView: View {
 		.onTapGesture {
 			focusedField = nil
 		}
+	}
+
+	// MARK: Components
+
+	var usernameField: some View {
+		TextField("Username", text: $viewModel.username, prompt: Text("Enter username"))
+			.textContentType(.username)
+			.textInputAutocapitalization(.never)
+			.disableAutocorrection(true)
+			.textFieldStyle(.roundedBorder)
+			.focused($focusedField, equals: .username)
+			.overlay {
+				HStack {
+					Spacer()
+					Image(systemName: "person.badge.key")
+						.resizable()
+						.frame(width: 20, height: 20)
+						.foregroundColor(.accentColor)
+						.opacity(viewModel.isAutoFillAssistedReady ? 1 : 0)
+						.padding(.trailing, 10)
+						.animation(.easeInOut, value: viewModel.isAutoFillAssistedReady)
+				}
+			}
+			.padding(.bottom, 10)
+	}
+
+	var fido2Options: some View {
+		DisclosureGroup(content: {
+			VStack {
+				Divider()
+					.padding(.top, 10)
+
+				fido2OptionTitle("(R) Attestation Conveyance Preference")
+				Picker("Resident Key Requirement", selection: $viewModel.requirementConveyancePreference) {
+					ForEach(Fido2RequirementConveyancePreference.allCases, id: \.self) { preference in
+						fido2OptionLabel(preference.rawValue).tag(preference)
+					}
+				}
+				.pickerStyle(.segmented)
+
+				fido2OptionTitle("(R) Authenticator Attachment")
+				Picker("Authenticator Attachment", selection: $viewModel.authenticatorAttachment) {
+					ForEach(Fido2AuthenticatorAttachment.allCases, id: \.self) { attachment in
+						fido2OptionLabel(attachment.rawValue).tag(attachment)
+					}
+				}
+				.pickerStyle(.segmented)
+
+				fido2OptionTitle("(R/A) User Verification Requirement")
+				Picker("User Verification Requirement", selection: $viewModel.userVerificationRequirement) {
+					ForEach(Fido2RequirementOption.allCases, id: \.self) { option in
+						fido2OptionLabel(option.rawValue).tag(option)
+					}
+				}
+				.pickerStyle(.segmented)
+
+				fido2OptionTitle("(R) Resident Key Requirement")
+					.disabled($viewModel.authenticatorAttachment.wrappedValue != .crossPlatform)
+				Picker("Resident Key Requirement", selection: $viewModel.residentKeyRequirement) {
+					ForEach(Fido2RequirementOption.allCases, id: \.self) { option in
+						fido2OptionLabel(option.rawValue).tag(option)
+					}
+				}
+				.disabled($viewModel.authenticatorAttachment.wrappedValue != .crossPlatform)
+				.pickerStyle(.segmented)
+			}
+		}, label: {
+			Text("Registration / Authentication  Options")
+				.font(.subheadline)
+				.foregroundColor(.secondary)
+		})
+		.padding(10)
+		.background(
+			RoundedRectangle(cornerRadius: 10)
+				.stroke(Color(.separator), lineWidth: 1)
+				.background(Color(.secondarySystemBackground).cornerRadius(10))
+		)
+		.padding(.bottom, 10)
+	}
+
+	func fido2OptionTitle(_ title: String) -> some View {
+		Text(title)
+			.font(.caption)
+			.foregroundColor(.secondary)
+			.frame(maxWidth: .infinity, alignment: .leading)
+			.padding(.top, 5)
+	}
+
+	func fido2OptionLabel(_ label: String) -> some View {
+		Text(label)
+			.font(.caption)
 	}
 
 	var buttons: some View {
@@ -102,7 +182,7 @@ struct HomeScreenView: View {
 				RoundedRectangle(cornerRadius: 10)
 					.stroke(color, lineWidth: 2)
 			)
-			.padding(.top, 30)
+			.padding(.vertical, 30)
 		)
 	}
 
@@ -125,6 +205,8 @@ struct HomeScreenView: View {
 		)
 	}
 }
+
+// MARK: - Preview
 
 #Preview {
 	HomeScreenView()

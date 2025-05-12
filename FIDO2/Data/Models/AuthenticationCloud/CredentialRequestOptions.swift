@@ -6,7 +6,7 @@
 
 struct CredentialRequestOptions: Codable {
 	let rpId: String
-	let userVerification: Fido2UserVerification
+	let userVerification: UserVerification
 	let timeout: Int
 	let challenge: String
 	var allowCredentials: [Credential]?
