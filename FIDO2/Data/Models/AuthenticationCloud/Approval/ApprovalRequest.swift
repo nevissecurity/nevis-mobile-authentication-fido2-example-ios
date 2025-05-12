@@ -8,5 +8,5 @@ struct ApprovalRequest: Encodable {
 	var username: String?
 	var userId: String?
 	var channel: String = "fido2"
-	let fido2Options: Fido2Options
+	let fido2Options: ApprovalFido2Options?
 }
