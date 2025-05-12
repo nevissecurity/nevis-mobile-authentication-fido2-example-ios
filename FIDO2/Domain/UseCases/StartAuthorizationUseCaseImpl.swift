@@ -19,10 +19,10 @@ final class StartAuthorizationUseCaseImpl {
 extension StartAuthorizationUseCaseImpl: StartAuthorizationUseCase {
 	func execute(_ type: StartAuthorizationRequest) -> AnyPublisher<StartAuthorizationResponse, AppError> {
 		switch type {
-		case let .credentialRegistration(username):
-			fido2Repository.startRegistration(username: username)
-		case let .credentialAssertion(username):
-			fido2Repository.startApproval(username: username)
+		case let .credentialRegistration(username, fido2Options):
+			fido2Repository.startRegistration(username: username, fido2Options: fido2Options)
+		case let .credentialAssertion(username, fido2Options):
+			fido2Repository.startApproval(username: username, fido2Options: fido2Options)
 		}
 	}
 }

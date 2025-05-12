@@ -21,8 +21,12 @@ final class Fido2RepositoryImpl {
 extension Fido2RepositoryImpl: Fido2Repository {
 	// MARK: Registration
 
-	func startRegistration(username: String) -> AnyPublisher<StartAuthorizationResponse, AppError> {
-		let request = RegistrationRequest(username: username, displayName: username)
+	func startRegistration(username: String, fido2Options: Fido2Options) -> AnyPublisher<StartAuthorizationResponse, AppError> {
+		let request = RegistrationRequest(
+			username: username,
+			displayName: username,
+			fido2Options: RegistrationFido2Options(from: fido2Options)
+		)
 
 		return authenticationCloudDataSource.registrtion(request: request)
 			.tryMap { registrationResponse -> StartAuthorizationResponse in
@@ -59,8 +63,12 @@ extension Fido2RepositoryImpl: Fido2Repository {
 
 	// MARK: Approval
 
-	func startApproval(username: String? = nil) -> AnyPublisher<StartAuthorizationResponse, AppError> {
-		let request = ApprovalRequest(username: username, fido2Options: .init())
+	func startApproval(username: String? = nil, fido2Options: Fido2Options?) -> AnyPublisher<StartAuthorizationResponse, AppError> {
+		let request = ApprovalRequest(
+			username: username,
+			fido2Options: ApprovalFido2Options(from: fido2Options)
+		)
+
 		return authenticationCloudDataSource.approval(request: request)
 			.tryMap { approvalResponse -> StartAuthorizationResponse in
 				try approvalResponse.toDomain(username: username).get()

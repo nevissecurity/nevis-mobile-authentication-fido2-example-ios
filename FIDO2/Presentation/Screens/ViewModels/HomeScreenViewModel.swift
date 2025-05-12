@@ -11,14 +11,20 @@ import SwiftUI
 final class HomeScreenViewModel: ObservableObject {
 	@Published var isLoading = false
 	@Published var isAutoFillAssistedReady = false
+
 	@Published private(set) var message: HomeScreenMessage?
 	@Published private(set) var appConfiguration: AppConfiguration?
+
 	@Published var username: String = ""
 	@Published var buttons: [HomeScreenViewModel.ButtonType] = [
 		.register,
 		.authenticate,
 		.authenticateUsernameless,
 	]
+	@Published var requirementConveyancePreference: Fido2RequirementConveyancePreference = .unspecified
+	@Published var authenticatorAttachment: Fido2AuthenticatorAttachment = .unspecified
+	@Published var userVerificationRequirement: Fido2RequirementOption = .unspecified
+	@Published var residentKeyRequirement: Fido2RequirementOption = .unspecified
 
 	private var cancellables: Set<AnyCancellable> = []
 	private let authorizationService: AuthorizationService
@@ -124,11 +130,26 @@ private extension HomeScreenViewModel {
 	func authorizationRequest(by buttonType: ButtonType) -> StartAuthorizationRequest? {
 		switch (buttonType, username.isEmpty) {
 		case (.register, false):
-			.credentialRegistration(username: username)
+			.credentialRegistration(username: username, fido2Options: .init(
+				requirementConveyancePreference: requirementConveyancePreference,
+				authenticatorAttachment: authenticatorAttachment,
+				userVerificationRequirement: userVerificationRequirement,
+				residentKeyRequirement: residentKeyRequirement
+			))
 		case (.authenticate, false):
-			.credentialAssertion(username: username)
+			.credentialAssertion(
+				username: username,
+				fido2Options: .init(
+					userVerificationRequirement: userVerificationRequirement
+				)
+			)
 		case (.authenticateUsernameless, _):
-			.credentialAssertion()
+			.credentialAssertion(
+				username: nil,
+				fido2Options: .init(
+					userVerificationRequirement: userVerificationRequirement
+				)
+			)
 		default:
 			nil
 		}

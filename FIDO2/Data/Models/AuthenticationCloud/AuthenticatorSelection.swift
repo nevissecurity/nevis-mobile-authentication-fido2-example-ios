@@ -5,7 +5,8 @@
 //
 
 struct AuthenticatorSelection: Codable {
-	let requireResidentKey: Bool
-	let residentKey: String
-	let userVerification: Fido2UserVerification
+	var authenticatorAttachment: AuthenticatorAttachment?
+	var requireResidentKey: Bool?
+	var userVerification: UserVerification?
+	var residentKey: ResidentKey?
 }

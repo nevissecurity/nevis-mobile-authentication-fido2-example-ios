@@ -7,7 +7,7 @@
 /// Enum representing the type of authorization in the FIDO2 protocol.
 enum StartAuthorizationRequest {
 	/// The type of authorization for credential registration.
-	case credentialRegistration(username: String)
+	case credentialRegistration(username: String, fido2Options: Fido2Options)
 	/// The type of authorization for credential authentication.
-	case credentialAssertion(username: String? = nil)
+	case credentialAssertion(username: String? = nil, fido2Options: Fido2Options? = nil)
 }

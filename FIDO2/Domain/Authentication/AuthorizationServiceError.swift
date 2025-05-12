@@ -17,9 +17,9 @@ extension AuthorizationServiceError: LocalizedError {
 	var errorDescription: String? {
 		switch self {
 		case let .failed(isPrefillAssisted, underlyingError):
-			"Authorization failed\(isPrefillAssisted ? "with prefill assistance" : ""). \(underlyingError?.localizedDescription ?? "")"
+			"Authorization failed\(isPrefillAssisted ? " with prefill assistance" : ""). \(underlyingError?.localizedDescription ?? "")"
 		case let .canceled(isPrefillAssisted):
-			"Authorization canceled\(isPrefillAssisted ? "with prefill assistance" : "")."
+			"Authorization canceled\(isPrefillAssisted ? " with prefill assistance" : "")."
 		}
 	}
 }

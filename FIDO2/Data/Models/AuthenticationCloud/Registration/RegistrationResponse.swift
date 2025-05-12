@@ -25,13 +25,27 @@ extension RegistrationResponse {
 		}
 
 		let credentialCreationOptions = enrollment.credentialCreationOptions
-		let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: credentialCreationOptions.rp.id)
-
 		guard let challengeData = credentialCreationOptions.challenge.base64UrlDecodedData,
 		      let userIdData = credentialCreationOptions.user.id.base64UrlDecodedData
 		else {
 			return .failure(.invalidConversion())
 		}
+
+		let registrationRequest = switch credentialCreationOptions.authenticatorSelection.authenticatorAttachment {
+		case .platform, .none:
+			createPlatformSpecificRequest(challengeData: challengeData, userIdData: userIdData)
+		case .crossPlatform:
+			createCrossPlatformSpecificRequest(challengeData: challengeData, userIdData: userIdData)
+		}
+
+		return .success(StartAuthorizationResponse(asAuthorizationRequest: registrationRequest, statusToken: enrollment.statusToken, username: username))
+	}
+}
+
+private extension RegistrationResponse {
+	func createPlatformSpecificRequest(challengeData: Data, userIdData: Data) -> some ASAuthorizationRequest {
+		let credentialCreationOptions = enrollment.credentialCreationOptions
+		let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: credentialCreationOptions.rp.id)
 
 		let registrationRequest = provider.createCredentialRegistrationRequest(
 			challenge: challengeData,
@@ -40,13 +54,45 @@ extension RegistrationResponse {
 		)
 
 		registrationRequest.attestationPreference = ASAuthorizationPublicKeyCredentialAttestationKind(rawValue: credentialCreationOptions.attestation)
-		registrationRequest.userVerificationPreference = ASAuthorizationPublicKeyCredentialUserVerificationPreference(rawValue: credentialCreationOptions.authenticatorSelection.userVerification.rawValue)
+		if let userVerification = credentialCreationOptions.authenticatorSelection.userVerification {
+			registrationRequest.userVerificationPreference = ASAuthorizationPublicKeyCredentialUserVerificationPreference(rawValue: userVerification.rawValue)
+		}
 		if #available(iOS 17.4, *) {
 			registrationRequest.excludedCredentials = credentialCreationOptions.excludeCredentials.map { element in
 				ASAuthorizationPlatformPublicKeyCredentialDescriptor(credentialID: element.id.base64UrlDecodedData!)
 			}
 		}
 
-		return .success(StartAuthorizationResponse(asAuthorizationRequest: registrationRequest, statusToken: enrollment.statusToken, username: username))
+		return registrationRequest
+	}
+
+	func createCrossPlatformSpecificRequest(challengeData: Data, userIdData: Data) -> some ASAuthorizationRequest {
+		let credentialCreationOptions = enrollment.credentialCreationOptions
+		let provider = ASAuthorizationSecurityKeyPublicKeyCredentialProvider(relyingPartyIdentifier: credentialCreationOptions.rp.id)
+
+		let registrationRequest = provider.createCredentialRegistrationRequest(
+			challenge: challengeData,
+			displayName: username,
+			name: username,
+			userID: userIdData,
+		)
+
+		registrationRequest.attestationPreference = ASAuthorizationPublicKeyCredentialAttestationKind(rawValue: credentialCreationOptions.attestation)
+		if let userVerification = credentialCreationOptions.authenticatorSelection.userVerification {
+			registrationRequest.userVerificationPreference = ASAuthorizationPublicKeyCredentialUserVerificationPreference(rawValue: userVerification.rawValue)
+		}
+		registrationRequest.credentialParameters = credentialCreationOptions.pubKeyCredParams.map { credential in
+			ASAuthorizationPublicKeyCredentialParameters(algorithm: ASCOSEAlgorithmIdentifier(rawValue: credential.alg))
+		}
+		if let residentKey = credentialCreationOptions.authenticatorSelection.residentKey {
+			registrationRequest.residentKeyPreference = ASAuthorizationPublicKeyCredentialResidentKeyPreference(rawValue: residentKey.rawValue)
+		}
+		if #available(iOS 17.4, *) {
+			registrationRequest.excludedCredentials = credentialCreationOptions.excludeCredentials.map { element in
+				ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor(credentialID: element.id.base64UrlDecodedData!, transports: [.usb, .bluetooth, .nfc])
+			}
+		}
+
+		return registrationRequest
 	}
 }
