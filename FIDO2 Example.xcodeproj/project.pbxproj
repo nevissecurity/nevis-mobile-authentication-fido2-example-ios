@@ -13,27 +13,8 @@
 		22C05F1E2D9F077500935A3C /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 22C05F1D2D9F077500935A3C /* Moya */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		22C05EA22D9EA48100935A3C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22C05E8C2D9EA47F00935A3C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 22C05E932D9EA47F00935A3C;
-			remoteInfo = FIDO2;
-		};
-		22C05EAC2D9EA48100935A3C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22C05E8C2D9EA47F00935A3C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 22C05E932D9EA47F00935A3C;
-			remoteInfo = FIDO2;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		22C05E942D9EA47F00935A3C /* FIDO2 Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FIDO2 Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		22C05EA12D9EA48100935A3C /* FIDO2 Example Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FIDO2 Example Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		22C05EAB2D9EA48100935A3C /* FIDO2 Example UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FIDO2 Example UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C05F162D9F037F00935A3C /* ReadMe.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ReadMe.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -41,16 +22,6 @@
 		22C05E962D9EA47F00935A3C /* FIDO2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = FIDO2;
-			sourceTree = "<group>";
-		};
-		22C05EA42D9EA48100935A3C /* FIDO2Tests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FIDO2Tests;
-			sourceTree = "<group>";
-		};
-		22C05EAE2D9EA48100935A3C /* FIDO2UITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FIDO2UITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -64,20 +35,6 @@
 				22C05F1C2D9F077500935A3C /* CombineMoya in Frameworks */,
 				061C0D922DAFCE810053B403 /* Swinject in Frameworks */,
 				061C0D942DAFCE810053B403 /* SwinjectAutoregistration in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C05E9E2D9EA48100935A3C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C05EA82D9EA48100935A3C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,8 +53,6 @@
 			children = (
 				22C05F162D9F037F00935A3C /* ReadMe.md */,
 				22C05E962D9EA47F00935A3C /* FIDO2 */,
-				22C05EA42D9EA48100935A3C /* FIDO2Tests */,
-				22C05EAE2D9EA48100935A3C /* FIDO2UITests */,
 				061C0D902DAFCE810053B403 /* Frameworks */,
 				22C05E952D9EA47F00935A3C /* Products */,
 			);
@@ -107,8 +62,6 @@
 			isa = PBXGroup;
 			children = (
 				22C05E942D9EA47F00935A3C /* FIDO2 Example.app */,
-				22C05EA12D9EA48100935A3C /* FIDO2 Example Tests.xctest */,
-				22C05EAB2D9EA48100935A3C /* FIDO2 Example UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -143,52 +96,6 @@
 			productReference = 22C05E942D9EA47F00935A3C /* FIDO2 Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		22C05EA02D9EA48100935A3C /* FIDO2 Example Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 22C05EB82D9EA48100935A3C /* Build configuration list for PBXNativeTarget "FIDO2 Example Tests" */;
-			buildPhases = (
-				22C05E9D2D9EA48100935A3C /* Sources */,
-				22C05E9E2D9EA48100935A3C /* Frameworks */,
-				22C05E9F2D9EA48100935A3C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				22C05EA32D9EA48100935A3C /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				22C05EA42D9EA48100935A3C /* FIDO2Tests */,
-			);
-			name = "FIDO2 Example Tests";
-			packageProductDependencies = (
-			);
-			productName = FIDO2Tests;
-			productReference = 22C05EA12D9EA48100935A3C /* FIDO2 Example Tests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		22C05EAA2D9EA48100935A3C /* FIDO2 Example UITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 22C05EBB2D9EA48100935A3C /* Build configuration list for PBXNativeTarget "FIDO2 Example UITests" */;
-			buildPhases = (
-				22C05EA72D9EA48100935A3C /* Sources */,
-				22C05EA82D9EA48100935A3C /* Frameworks */,
-				22C05EA92D9EA48100935A3C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				22C05EAD2D9EA48100935A3C /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				22C05EAE2D9EA48100935A3C /* FIDO2UITests */,
-			);
-			name = "FIDO2 Example UITests";
-			packageProductDependencies = (
-			);
-			productName = FIDO2UITests;
-			productReference = 22C05EAB2D9EA48100935A3C /* FIDO2 Example UITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -201,14 +108,6 @@
 				TargetAttributes = {
 					22C05E932D9EA47F00935A3C = {
 						CreatedOnToolsVersion = 16.3;
-					};
-					22C05EA02D9EA48100935A3C = {
-						CreatedOnToolsVersion = 16.3;
-						TestTargetID = 22C05E932D9EA47F00935A3C;
-					};
-					22C05EAA2D9EA48100935A3C = {
-						CreatedOnToolsVersion = 16.3;
-						TestTargetID = 22C05E932D9EA47F00935A3C;
 					};
 				};
 			};
@@ -232,28 +131,12 @@
 			projectRoot = "";
 			targets = (
 				22C05E932D9EA47F00935A3C /* FIDO2 Example */,
-				22C05EA02D9EA48100935A3C /* FIDO2 Example Tests */,
-				22C05EAA2D9EA48100935A3C /* FIDO2 Example UITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		22C05E922D9EA47F00935A3C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C05E9F2D9EA48100935A3C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C05EA92D9EA48100935A3C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -291,34 +174,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		22C05E9D2D9EA48100935A3C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		22C05EA72D9EA48100935A3C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		22C05EA32D9EA48100935A3C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 22C05E932D9EA47F00935A3C /* FIDO2 Example */;
-			targetProxy = 22C05EA22D9EA48100935A3C /* PBXContainerItemProxy */;
-		};
-		22C05EAD2D9EA48100935A3C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 22C05E932D9EA47F00935A3C /* FIDO2 Example */;
-			targetProxy = 22C05EAC2D9EA48100935A3C /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		22C05EB32D9EA48100935A3C /* Debug */ = {
@@ -510,74 +366,6 @@
 			};
 			name = Release;
 		};
-		22C05EB92D9EA48100935A3C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.nevis.mobile.authentication.fido2.exampleTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FIDO2 Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FIDO2 Example";
-			};
-			name = Debug;
-		};
-		22C05EBA2D9EA48100935A3C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.nevis.mobile.authentication.fido2.exampleTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FIDO2 Example.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FIDO2 Example";
-			};
-			name = Release;
-		};
-		22C05EBC2D9EA48100935A3C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.nevis.mobile.authentication.fido2.exampleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = FIDO2;
-			};
-			name = Debug;
-		};
-		22C05EBD2D9EA48100935A3C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ch.nevis.mobile.authentication.fido2.exampleUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = FIDO2;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -595,24 +383,6 @@
 			buildConfigurations = (
 				22C05EB62D9EA48100935A3C /* Debug */,
 				22C05EB72D9EA48100935A3C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		22C05EB82D9EA48100935A3C /* Build configuration list for PBXNativeTarget "FIDO2 Example Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				22C05EB92D9EA48100935A3C /* Debug */,
-				22C05EBA2D9EA48100935A3C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		22C05EBB2D9EA48100935A3C /* Build configuration list for PBXNativeTarget "FIDO2 Example UITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				22C05EBC2D9EA48100935A3C /* Debug */,
-				22C05EBD2D9EA48100935A3C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

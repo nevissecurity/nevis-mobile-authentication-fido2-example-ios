@@ -38,3 +38,13 @@ private extension ConfigurationLoaderImpl {
 		return try PropertyListDecoder().decode(AppConfiguration.self, from: data)
 	}
 }
+
+// MARK: - Preview
+
+extension ConfigurationLoaderImpl {
+	static var preview: ConfigurationLoaderImpl {
+		let config = ConfigurationLoaderImpl()
+		config.appConfig = AppConfiguration(host: "<host>", accessToken: "<AccessToken>")
+		return config
+	}
+}

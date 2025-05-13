@@ -12,7 +12,7 @@ final class HomeScreenViewModel: ObservableObject {
 	@Published var isLoading = false
 	@Published var isAutoFillAssistedReady = false
 
-	@Published private(set) var message: HomeScreenMessage?
+	@Published var message: HomeScreenMessage?
 	@Published private(set) var appConfiguration: AppConfiguration?
 
 	@Published var username: String = ""
@@ -174,5 +174,18 @@ private extension HomeScreenViewModel {
 				}
 			}
 			.store(in: &cancellables)
+	}
+}
+
+// MARK: - Preview
+
+extension HomeScreenViewModel {
+	static var preview: some HomeScreenViewModel {
+		HomeScreenViewModel(
+			configurationLoader: ConfigurationLoaderImpl.preview,
+			authorizationService: AuthorizationServiceImpl.preview,
+			startAuthorizationUseCase: StartAuthorizationUseCaseImpl.preview,
+			completeAuthorizationUseCase: CompleteAuthorizationUseCaseImpl.preview
+		)
 	}
 }
