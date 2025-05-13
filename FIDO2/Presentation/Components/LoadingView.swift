@@ -41,10 +41,11 @@ struct LoadingView<Content>: View where Content: View {
 // MARK: - Preview
 
 #Preview {
-	// TODO: check for iOS 16 compatible preview
-//	@Previewable @State var isLoading = true
-//	LoadingView(isShowing: $isLoading) {
-//		VStack {}
-//			.frame(maxWidth: .infinity, maxHeight: .infinity)
-//	}
+	LoadingView(isShowing: .constant(true)) {
+		VStack {
+			Text("Preview Content")
+				.offset(.init(width: 0, height: -50))
+		}
+		.frame(maxWidth: .infinity, maxHeight: .infinity)
+	}
 }

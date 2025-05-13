@@ -79,3 +79,11 @@ extension AuthorizationServiceImpl: ASAuthorizationControllerDelegate {
 		resultPublisher.send(.failure(.failed(isPrefillAssisted: authorizationController.isAutoFillAssisted, underlyingError: error)))
 	}
 }
+
+// MARK: - Preview
+
+extension AuthorizationServiceImpl {
+	static var preview: some AuthorizationService {
+		AuthorizationServiceImpl()
+	}
+}

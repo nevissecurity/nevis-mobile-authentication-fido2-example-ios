@@ -14,33 +14,35 @@ struct HomeScreenView: View {
 
 	// MARK: Properties
 
-	@StateObject private var viewModel = dependencyContainer ~> HomeScreenViewModel.self
+	@EnvironmentObject private var viewModel: HomeScreenViewModel
 	@FocusState private var focusedField: FocusedField?
-	@State private var expandedSectionId: String? = "register"
 
 	// MARK: Body
 
 	var body: some View {
 		LoadingView(isShowing: $viewModel.isLoading) {
-			VStack {
+			GeometryReader { geometry in
 				ScrollView {
-					Text("FIDO 2 Example")
-						.font(.title)
-						.padding(.bottom, 30)
+					VStack {
+						Text("FIDO 2 Example")
+							.font(.title)
+							.padding(.bottom, 30)
 
-					usernameField
-					fido2Options
-					buttons
+						usernameField
+						fido2Options
+						buttons
 
-					Spacer()
-					message
-						.animation(.easeInOut, value: viewModel.message == nil)
+						Spacer()
+						message
+							.animation(.easeInOut, value: viewModel.message == nil)
 
-					Spacer()
-					appConfiguration
+						Spacer()
+						appConfiguration
+					}
+					.padding()
+					.frame(minHeight: geometry.size.height)
 				}
 			}
-			.padding()
 		}
 		.onAppear {
 			focusedField = .username
@@ -80,7 +82,7 @@ struct HomeScreenView: View {
 				Divider()
 					.padding(.top, 10)
 
-				fido2OptionTitle("(R) Attestation Conveyance Preference")
+				fido2OptionTitle("(Reg.) Attestation Conveyance Preference")
 				Picker("Resident Key Requirement", selection: $viewModel.requirementConveyancePreference) {
 					ForEach(Fido2RequirementConveyancePreference.allCases, id: \.self) { preference in
 						fido2OptionLabel(preference.rawValue).tag(preference)
@@ -88,7 +90,7 @@ struct HomeScreenView: View {
 				}
 				.pickerStyle(.segmented)
 
-				fido2OptionTitle("(R) Authenticator Attachment")
+				fido2OptionTitle("(Reg.) Authenticator Attachment")
 				Picker("Authenticator Attachment", selection: $viewModel.authenticatorAttachment) {
 					ForEach(Fido2AuthenticatorAttachment.allCases, id: \.self) { attachment in
 						fido2OptionLabel(attachment.rawValue).tag(attachment)
@@ -96,7 +98,7 @@ struct HomeScreenView: View {
 				}
 				.pickerStyle(.segmented)
 
-				fido2OptionTitle("(R/A) User Verification Requirement")
+				fido2OptionTitle("(Reg./Auth.) User Verification Requirement")
 				Picker("User Verification Requirement", selection: $viewModel.userVerificationRequirement) {
 					ForEach(Fido2RequirementOption.allCases, id: \.self) { option in
 						fido2OptionLabel(option.rawValue).tag(option)
@@ -104,7 +106,7 @@ struct HomeScreenView: View {
 				}
 				.pickerStyle(.segmented)
 
-				fido2OptionTitle("(R) Resident Key Requirement")
+				fido2OptionTitle("(Reg.) Resident Key Requirement")
 					.disabled($viewModel.authenticatorAttachment.wrappedValue != .crossPlatform)
 				Picker("Resident Key Requirement", selection: $viewModel.residentKeyRequirement) {
 					ForEach(Fido2RequirementOption.allCases, id: \.self) { option in
@@ -119,6 +121,7 @@ struct HomeScreenView: View {
 				.font(.subheadline)
 				.foregroundColor(.secondary)
 		})
+		.accentColor(.secondary)
 		.padding(10)
 		.background(
 			RoundedRectangle(cornerRadius: 10)
@@ -208,6 +211,24 @@ struct HomeScreenView: View {
 
 // MARK: - Preview
 
-#Preview {
-	HomeScreenView()
+#Preview() {
+	let viewModel = HomeScreenViewModel.preview
+	viewModel.username = "User"
+	viewModel.isAutoFillAssistedReady = true
+	return HomeScreenView()
+		.environmentObject(viewModel)
+}
+
+#Preview("Error message") {
+	let viewModel = HomeScreenViewModel.preview
+	viewModel.message = HomeScreenMessage(type: .error, title: "Error", details: "An error occurred")
+	return HomeScreenView()
+		.environmentObject(viewModel)
+}
+
+#Preview("Success message") {
+	let viewModel = HomeScreenViewModel.preview
+	viewModel.message = HomeScreenMessage(type: .success, title: "Success", details: "An error occurred")
+	return HomeScreenView()
+		.environmentObject(viewModel)
 }

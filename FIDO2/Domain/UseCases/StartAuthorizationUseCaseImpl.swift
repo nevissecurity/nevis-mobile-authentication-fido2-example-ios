@@ -26,3 +26,17 @@ extension StartAuthorizationUseCaseImpl: StartAuthorizationUseCase {
 		}
 	}
 }
+
+// MARK: - Preview
+
+extension StartAuthorizationUseCaseImpl {
+	static var preview: some StartAuthorizationUseCase {
+		StartAuthorizationUseCasePreview()
+	}
+}
+
+final class StartAuthorizationUseCasePreview: StartAuthorizationUseCase {
+	func execute(_: StartAuthorizationRequest) -> AnyPublisher<StartAuthorizationResponse, AppError> {
+		Empty<StartAuthorizationResponse, AppError>().eraseToAnyPublisher()
+	}
+}

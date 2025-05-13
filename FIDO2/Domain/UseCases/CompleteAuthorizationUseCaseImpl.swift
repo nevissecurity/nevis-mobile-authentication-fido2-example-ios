@@ -26,3 +26,18 @@ extension CompleteAuthorizationUseCaseImpl: CompleteAuthorizationUseCase {
 		}
 	}
 }
+
+// MARK: - Preview
+
+extension CompleteAuthorizationUseCaseImpl {
+	static var preview: some CompleteAuthorizationUseCase {
+		CompleteAuthorizationUseCasePreview()
+	}
+}
+
+final class CompleteAuthorizationUseCasePreview: CompleteAuthorizationUseCase {
+	func execute(_: CompleteAuthorizationRequest) -> AnyPublisher<(), AppError> {
+		Empty<(), AppError>()
+			.eraseToAnyPublisher()
+	}
+}
