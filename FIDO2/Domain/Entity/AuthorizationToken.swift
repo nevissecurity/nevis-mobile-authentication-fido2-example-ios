@@ -4,6 +4,4 @@
 // Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
-protocol ConfigurationLoader {
-	var config: AppConfiguration { get throws }
-}
+typealias AuthorizationToken = String

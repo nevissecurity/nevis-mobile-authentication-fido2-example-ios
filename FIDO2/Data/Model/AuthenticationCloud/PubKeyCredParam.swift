@@ -4,6 +4,7 @@
 // Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
-protocol ConfigurationLoader {
-	var config: AppConfiguration { get throws }
+struct PubKeyCredParam: Codable {
+	let alg: Int
+	let type: String
 }

@@ -24,14 +24,19 @@ extension AuthorizationServiceImpl: AuthorizationService {
 			cancel()
 		}
 
-		currentAuthorizationController = AuthorizationController(startAuthorizationResponse: startAuthorizationResponse, isAutoFillAssisted: isAutoFillAssisted)
-		currentAuthorizationController?.delegate = self
-		if isAutoFillAssisted {
-			currentAuthorizationController?.performAutoFillAssistedRequests()
+		do {
+			currentAuthorizationController = try AuthorizationController(startAuthorizationResponse: startAuthorizationResponse, isAutoFillAssisted: isAutoFillAssisted)
+			currentAuthorizationController?.delegate = self
+			if isAutoFillAssisted {
+				currentAuthorizationController?.performAutoFillAssistedRequests()
+			}
+			else {
+				currentAuthorizationController?.presentationContextProvider = self
+				currentAuthorizationController?.performRequests()
+			}
 		}
-		else {
-			currentAuthorizationController?.presentationContextProvider = self
-			currentAuthorizationController?.performRequests()
+		catch {
+			resultPublisher.send(.failure(.failed(isPrefillAssisted: isAutoFillAssisted, underlyingError: error)))
 		}
 	}
 
@@ -57,17 +62,17 @@ extension AuthorizationServiceImpl: ASAuthorizationControllerDelegate {
 	func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
 		guard let authorizationController = controller as? AuthorizationController else { return }
 
-		let completeAuhorizationRequest: CompleteAuthorizationRequest? = switch authorization.credential {
-		case let asResult as ASAuthorizationPlatformPublicKeyCredentialRegistration where authorizationController.startAuthorizationResponse.username != nil:
-			.credentialRegistration(username: authorizationController.startAuthorizationResponse.username!, statusToken: authorizationController.startAuthorizationResponse.statusToken, asResult: asResult)
+		let completeAuthorizationRequest: CompleteAuthorizationRequest? = switch authorization.credential {
+		case let asResult as ASAuthorizationPlatformPublicKeyCredentialRegistration where authorizationController.startAuthorizationResponse.userName != nil:
+			.credentialRegistration(username: authorizationController.startAuthorizationResponse.userName!, statusToken: authorizationController.startAuthorizationResponse.statusToken, authorizationResult: AuthorizationResult(from: asResult))
 		case let asResult as ASAuthorizationPlatformPublicKeyCredentialAssertion:
-			.credentialAssertion(statusToken: authorizationController.startAuthorizationResponse.statusToken, asResult: asResult)
+			.credentialAssertion(statusToken: authorizationController.startAuthorizationResponse.statusToken, authorizationResult: AuthorizationResult(from: asResult))
 		default:
 			nil
 		}
 
-		guard let completeAuhorizationRequest else { return }
-		resultPublisher.send(.success(completeAuhorizationRequest))
+		guard let completeAuthorizationRequest else { return }
+		resultPublisher.send(.success(completeAuthorizationRequest))
 	}
 
 	func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: any Error) {
