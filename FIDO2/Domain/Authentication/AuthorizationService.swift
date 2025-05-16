@@ -4,7 +4,6 @@
 // Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
-import AuthenticationServices
 import Combine
 
 protocol AuthorizationService {

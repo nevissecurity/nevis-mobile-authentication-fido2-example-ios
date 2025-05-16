@@ -1,5 +1,5 @@
 //
-// FIDO2 Example App
+// FIDO2 Example
 //
 // Copyright © 2025 Nevis Security AG. All rights reserved.
 //
