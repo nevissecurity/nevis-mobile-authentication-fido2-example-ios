@@ -24,6 +24,4 @@ Before you start compiling and using the example applications please ensure you 
 - iOS 16 or later
 - Xcode 16.2+, including Swift 6.0.3+
 
-[...]
-
 © 2025 made with ❤ by Nevis

@@ -35,7 +35,7 @@ extension Fido2RepositoryImpl: Fido2Repository {
 			.eraseToAnyPublisher()
 	}
 
-	func completeRegistration(username: String, statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<(), AppError> {
+	func completeRegistration(username: String, statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<AuthorizationToken, AppError> {
 		guard let rawAttestationObject = authorizationResult.rawAttestationObject else {
 			return Fail(error: AppError.missingData(message: "Invalid attestation object received")).eraseToAnyPublisher()
 		}
@@ -76,7 +76,7 @@ extension Fido2RepositoryImpl: Fido2Repository {
 			.eraseToAnyPublisher()
 	}
 
-	func completeApproval(statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<(), AppError> {
+	func completeApproval(statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<AuthorizationToken, AppError> {
 		guard let rawAuthenticatorData = authorizationResult.rawAuthenticatorData else {
 			return Fail(error: AppError.missingData(message: "Invalid attestation object received")).eraseToAnyPublisher()
 		}

@@ -27,7 +27,6 @@ extension RegistrationResponse {
 		let credentialCreationOptions = enrollment.credentialCreationOptions
 		let authorizationCreationOptions = AuthorizationCreationOption(
 			rpId: credentialCreationOptions.rp.id,
-
 			username: username,
 			challenge: credentialCreationOptions.challenge.base64UrlDecodedData,
 			userId: credentialCreationOptions.user.id.base64UrlDecodedData,
