@@ -17,7 +17,7 @@ final class CompleteAuthorizationUseCaseImpl {
 // MARK: - CompleteAuthorizationUseCase
 
 extension CompleteAuthorizationUseCaseImpl: CompleteAuthorizationUseCase {
-	func execute(_ type: CompleteAuthorizationRequest) -> AnyPublisher<(), AppError> {
+	func execute(_ type: CompleteAuthorizationRequest) -> AnyPublisher<AuthorizationToken, AppError> {
 		switch type {
 		case let .credentialRegistration(username, statusToken, asResult):
 			fido2Repository.completeRegistration(username: username, statusToken: statusToken, authorizationResult: asResult)
@@ -36,8 +36,8 @@ extension CompleteAuthorizationUseCaseImpl {
 }
 
 final class CompleteAuthorizationUseCasePreview: CompleteAuthorizationUseCase {
-	func execute(_: CompleteAuthorizationRequest) -> AnyPublisher<(), AppError> {
-		Empty<(), AppError>()
+	func execute(_: CompleteAuthorizationRequest) -> AnyPublisher<AuthorizationToken, AppError> {
+		Empty<AuthorizationToken, AppError>()
 			.eraseToAnyPublisher()
 	}
 }

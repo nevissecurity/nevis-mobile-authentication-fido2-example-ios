@@ -24,7 +24,6 @@ extension ApprovalResponse {
 
 		let authorizationCreationOptions = AuthorizationCreationOption(
 			rpId: credentialRequestOptions.rpId,
-
 			username: username,
 			challenge: credentialRequestOptions.challenge.base64UrlDecodedData,
 			userVerificationPreference: credentialRequestOptions.userVerification.map(),

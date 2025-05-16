@@ -49,7 +49,6 @@ private extension AuthorizationController {
 
 	static func createPlatformSpecificRequest(username: String, challenge: Data, userId: Data, options: AuthorizationCreationOption) -> some ASAuthorizationRequest {
 		let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: options.rpId)
-
 		let registrationRequest = provider.createCredentialRegistrationRequest(
 			challenge: challenge,
 			name: username,
@@ -102,7 +101,7 @@ private extension AuthorizationController {
 	}
 }
 
-// MARK: - Registration
+// MARK: - Authentication
 
 private extension AuthorizationController {
 	static func createCredentialAuthenticationRequest(options: AuthorizationCreationOption) throws -> some ASAuthorizationRequest {

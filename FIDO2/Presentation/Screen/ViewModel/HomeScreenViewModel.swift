@@ -119,8 +119,8 @@ private extension HomeScreenViewModel {
 					}
 					self?.startAutoFillAssistedAuthorization()
 				},
-				receiveValue: { [weak self] in
-					self?.setMessage(.success, title: "Authorization successfully completed")
+				receiveValue: { [weak self] authorizationToken in
+					self?.setMessage(.success, title: "Authorization successfully completed", details: "Authorization token: \(authorizationToken)")
 				}
 			)
 			.store(in: &cancellables)

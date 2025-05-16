@@ -7,5 +7,5 @@
 import Combine
 
 protocol CompleteAuthorizationUseCase {
-	func execute(_ type: CompleteAuthorizationRequest) -> AnyPublisher<(), AppError>
+	func execute(_ type: CompleteAuthorizationRequest) -> AnyPublisher<AuthorizationToken, AppError>
 }

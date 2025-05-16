@@ -14,11 +14,11 @@ struct AttestationResponse: ServerResponse {
 // MARK: - Map to domain
 
 extension AttestationResponse {
-	func map() -> Result<(), Error> {
+	func map() -> Result<AuthorizationToken, Error> {
 		if isError {
 			return .failure(AppError.request(message: errorMessage))
 		}
 
-		return .success(())
+		return .success(token)
 	}
 }
