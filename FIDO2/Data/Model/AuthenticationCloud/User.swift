@@ -4,6 +4,8 @@
 // Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
-protocol ConfigurationLoader {
-	var config: AppConfiguration { get throws }
+struct User: Codable {
+	let displayName: String
+	let id: String
+	let name: String
 }

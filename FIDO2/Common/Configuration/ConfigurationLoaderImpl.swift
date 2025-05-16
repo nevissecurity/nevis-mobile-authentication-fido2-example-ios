@@ -1,5 +1,5 @@
 //
-// FIDO2 Example App
+// FIDO2 Example
 //
 // Copyright © 2025 Nevis Security AG. All rights reserved.
 //
@@ -9,6 +9,8 @@ import Foundation
 final class ConfigurationLoaderImpl {
 	private(set) var appConfig: AppConfiguration?
 }
+
+// MARK: - ConfigurationLoader
 
 extension ConfigurationLoaderImpl: ConfigurationLoader {
 	var config: AppConfiguration {
@@ -22,6 +24,8 @@ extension ConfigurationLoaderImpl: ConfigurationLoader {
 		}
 	}
 }
+
+// MARK: - Private Interface
 
 private extension ConfigurationLoaderImpl {
 	/// Asynchronously loads the configuration from the app bundle's Resources.

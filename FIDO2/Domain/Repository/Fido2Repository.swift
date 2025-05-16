@@ -1,0 +1,14 @@
+//
+// FIDO2 Example
+//
+// Copyright © 2025 Nevis Security AG. All rights reserved.
+//
+
+import Combine
+
+protocol Fido2Repository {
+	func startRegistration(username: String, fido2Options: Fido2Options) -> AnyPublisher<StartAuthorizationResponse, AppError>
+	func completeRegistration(username: String, statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<(), AppError>
+	func startApproval(username: String?, fido2Options: Fido2Options?) -> AnyPublisher<StartAuthorizationResponse, AppError>
+	func completeApproval(statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<(), AppError>
+}
