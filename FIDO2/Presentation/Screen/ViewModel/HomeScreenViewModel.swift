@@ -1,0 +1,213 @@
+//
+// FIDO2 Example
+//
+// Copyright © 2025 Nevis Security AG. All rights reserved.
+//
+
+import AuthenticationServices
+import Combine
+import SwiftUI
+
+final class HomeScreenViewModel: ObservableObject {
+	// MARK: Properties
+
+	@Published var isLoading = false
+	@Published var isAutoFillAssistedReady = false
+
+	@Published var message: HomeScreenMessage?
+	@Published private(set) var appConfiguration: AppConfiguration?
+
+	@Published var username: String = ""
+	@Published var sections: [Section] = [
+		.init(id: .register, title: "Registration"),
+		.init(id: .authenticate, title: "Authentication"),
+		.init(id: .authenticateUsernameless, title: "Authentication (Usernameless)"),
+	]
+
+	@Published var userVerificationRequirement: Fido2RequirementOption = .unspecified
+	@Published var authenticatorAttachment: Fido2AuthenticatorAttachment = .unspecified
+	@Published var requirementConveyancePreference: Fido2RequirementConveyancePreference = .unspecified
+	@Published var residentKeyRequirement: Fido2RequirementOption = .unspecified
+
+	private var cancellables: Set<AnyCancellable> = []
+	private let authorizationService: AuthorizationService
+	private let startAuthorizationUseCase: StartAuthorizationUseCase
+	private let completeAuthorizationUseCase: CompleteAuthorizationUseCase
+
+	// MARK: Initializer
+
+	init(configurationLoader: ConfigurationLoader, authorizationService: AuthorizationService, startAuthorizationUseCase: StartAuthorizationUseCase, completeAuthorizationUseCase: CompleteAuthorizationUseCase) {
+		self.authorizationService = authorizationService
+		self.startAuthorizationUseCase = startAuthorizationUseCase
+		self.completeAuthorizationUseCase = completeAuthorizationUseCase
+
+		loadConfiguration(configurationLoader)
+		optionValidations()
+		subscribeToAuthorizationService()
+		startAutoFillAssistedAuthorization()
+	}
+
+	// MARK: Authorization
+
+	func startAuthorization(_ section: Section) {
+		guard let authorizationRequest = authorizationRequest(for: section) else { return }
+		clearMessage()
+		isLoading = true
+		startAuthorizationUseCase.execute(authorizationRequest)
+			.receive(on: DispatchQueue.main)
+			.sink(
+				receiveCompletion: { [weak self] completion in
+					if case let .failure(error) = completion {
+						self?.setMessage(.error, title: "Starting authorization failed", details: error.localizedDescription)
+						self?.startAutoFillAssistedAuthorization()
+					}
+				},
+				receiveValue: { [weak self] startAuthorizationResponse in
+					self?.authorizationService.start(startAuthorizationResponse, isAutoFillAssisted: false)
+				}
+			)
+			.store(in: &cancellables)
+	}
+}
+
+// MARK: - Message
+
+extension HomeScreenViewModel {
+	func setMessage(_ messageType: HomeScreenMessage.MessageType = .success, title: String, details: String? = nil) {
+		print("\(title)\(details != nil ? ": \(details!)" : "")")
+
+		message = HomeScreenMessage(
+			type: messageType,
+			title: title,
+			details: details,
+		)
+
+		isLoading = false
+	}
+
+	func clearMessage() {
+		message = nil
+	}
+}
+
+// MARK: - Authorization requests
+
+private extension HomeScreenViewModel {
+	func startAutoFillAssistedAuthorization() {
+		isLoading = false
+		isAutoFillAssistedReady = false
+		startAuthorizationUseCase.execute(.credentialAssertion())
+			.sink(
+				receiveCompletion: { _ in },
+				receiveValue: { [weak self] startAuthorizationResponse in
+					guard let self else { return }
+					authorizationService.start(startAuthorizationResponse, isAutoFillAssisted: true)
+					isAutoFillAssistedReady = true
+				}
+			)
+			.store(in: &cancellables)
+	}
+
+	func completeAuthorization(_ request: CompleteAuthorizationRequest) {
+		isLoading = true
+		completeAuthorizationUseCase.execute(request)
+			.receive(on: DispatchQueue.main)
+			.sink(
+				receiveCompletion: { [weak self] completion in
+					if case let .failure(error) = completion {
+						self?.setMessage(.error, title: "Completing authorization failed", details: error.localizedDescription)
+					}
+					self?.startAutoFillAssistedAuthorization()
+				},
+				receiveValue: { [weak self] in
+					self?.setMessage(.success, title: "Authorization successfully completed")
+				}
+			)
+			.store(in: &cancellables)
+	}
+}
+
+// MARK: - Configuration
+
+private extension HomeScreenViewModel {
+	func loadConfiguration(_ configurationLoader: ConfigurationLoader) {
+		do {
+			appConfiguration = try configurationLoader.config
+		}
+		catch {
+			setMessage(.error, title: "Configuration error", details: error.localizedDescription)
+		}
+	}
+
+	func optionValidations() {
+		// Validate the relationship of FIDO 2 options
+		$authenticatorAttachment
+			.sink { [weak self] authenticatorAttachement in
+				if authenticatorAttachement != .crossPlatform {
+					self?.requirementConveyancePreference = .unspecified
+					self?.residentKeyRequirement = .unspecified
+				}
+			}
+			.store(in: &cancellables)
+	}
+}
+
+// MARK: - Authorization requests
+
+private extension HomeScreenViewModel {
+	func authorizationRequest(for section: Section) -> StartAuthorizationRequest? {
+		switch (section.id, username.isEmpty) {
+		case (.register, false):
+			.credentialRegistration(
+				username: username,
+				fido2Options: .map(from: (userVerificationRequirement, authenticatorAttachment, requirementConveyancePreference, residentKeyRequirement))
+			)
+		case (.authenticate, false):
+			.credentialAssertion(
+				username: username,
+				fido2Options: .map(from: userVerificationRequirement)
+			)
+		case (.authenticateUsernameless, _):
+			.credentialAssertion(
+				username: nil,
+				fido2Options: .map(from: userVerificationRequirement)
+			)
+		default:
+			nil
+		}
+	}
+}
+
+// MARK: - Subscribing to Authorizations Service
+
+private extension HomeScreenViewModel {
+	func subscribeToAuthorizationService() {
+		authorizationService.onComplete
+			.sink { [weak self] result in
+				switch result {
+				case let .success(authorization):
+					self?.completeAuthorization(authorization)
+				case let .failure(error):
+					if case let .canceled(isAutoFillAssisted) = error, isAutoFillAssisted {
+						return
+					}
+					self?.setMessage(.error, title: "Authorization error", details: error.localizedDescription)
+					self?.startAutoFillAssistedAuthorization()
+				}
+			}
+			.store(in: &cancellables)
+	}
+}
+
+// MARK: - Preview
+
+extension HomeScreenViewModel {
+	static var preview: some HomeScreenViewModel {
+		HomeScreenViewModel(
+			configurationLoader: ConfigurationLoaderImpl.preview,
+			authorizationService: AuthorizationServiceImpl.preview,
+			startAuthorizationUseCase: StartAuthorizationUseCaseImpl.preview,
+			completeAuthorizationUseCase: CompleteAuthorizationUseCaseImpl.preview
+		)
+	}
+}
