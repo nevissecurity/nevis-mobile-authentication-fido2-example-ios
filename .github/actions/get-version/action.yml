@@ -1,0 +1,26 @@
+name: Get Version
+description: Retrieves the version and build number of the app
+
+outputs:
+    version-number:
+        description: "The current version"
+        value: ${{ steps.get_version_number.outputs.version_number }}
+    build-number:
+        description: "The generated build number"
+        value: ${{ steps.get_build_number.outputs.build_number }}
+
+runs:
+    using: composite
+
+    steps:
+        - name: Get version number
+          id: get_version_number
+          shell: bash
+          run: |
+            echo "VERSION=$(grep -m1 'MARKETING_VERSION' 'FIDO2 Example.xcodeproj/project.pbxproj' | sed 's/.*MARKETING_VERSION = \([^;]*\);.*/\1/')" >> "$GITHUB_OUTPUT"
+
+        - name: Generate Build Number
+          id: get_build_number
+          uses: onyxmueller/build-tag-number@v1
+          with:
+              token: ${{ env.GITHUB_TOKEN }}
