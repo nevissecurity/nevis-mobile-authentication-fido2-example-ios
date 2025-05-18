@@ -14,20 +14,20 @@ final class HomeScreenViewModel: ObservableObject {
 	@Published var isLoading = false
 	@Published var isAutoFillAssistedReady = false
 
-	@Published var message: HomeScreenMessage?
+	@Published var message: Message?
 	@Published private(set) var appConfiguration: AppConfiguration?
 
 	@Published var username: String = ""
 	@Published var sections: [Section] = [
-		.init(id: .register, title: "Registration"),
-		.init(id: .authenticate, title: "Authentication"),
-		.init(id: .authenticateUsernameless, title: "Authentication (Usernameless)"),
+		.init(id: .registration, title: "Registration", buttonTitle: "Register"),
+		.init(id: .authentication, title: "Authentication", buttonTitle: "Authenticate"),
+		.init(id: .authenticationUsernameless, title: "Authentication (Usernameless)", buttonTitle: "Authenticate"),
 	]
 
-	@Published var userVerificationRequirement: Fido2RequirementOption = .unspecified
-	@Published var authenticatorAttachment: Fido2AuthenticatorAttachment = .unspecified
-	@Published var requirementConveyancePreference: Fido2RequirementConveyancePreference = .unspecified
-	@Published var residentKeyRequirement: Fido2RequirementOption = .unspecified
+	@Published var userVerificationRequirement: Fido2RequirementViewOption = .unspecified
+	@Published var authenticatorAttachment: Fido2AuthenticatorAttachmentViewOption = .unspecified
+	@Published var requirementConveyancePreference: Fido2RequirementConveyancePreferenceViewOption = .unspecified
+	@Published var residentKeyRequirement: Fido2RequirementViewOption = .unspecified
 
 	private var cancellables: Set<AnyCancellable> = []
 	private let authorizationService: AuthorizationService
@@ -73,10 +73,10 @@ final class HomeScreenViewModel: ObservableObject {
 // MARK: - Message
 
 extension HomeScreenViewModel {
-	func setMessage(_ messageType: HomeScreenMessage.MessageType = .success, title: String, details: String? = nil) {
+	func setMessage(_ messageType: Message.MessageType = .success, title: String, details: String? = nil) {
 		print("\(title)\(details != nil ? ": \(details!)" : "")")
 
-		message = HomeScreenMessage(
+		message = Message(
 			type: messageType,
 			title: title,
 			details: details,
@@ -157,17 +157,17 @@ private extension HomeScreenViewModel {
 private extension HomeScreenViewModel {
 	func authorizationRequest(for section: Section) -> StartAuthorizationRequest? {
 		switch (section.id, username.isEmpty) {
-		case (.register, false):
+		case (.registration, false):
 			.credentialRegistration(
 				username: username,
 				fido2Options: .map(from: (userVerificationRequirement, authenticatorAttachment, requirementConveyancePreference, residentKeyRequirement))
 			)
-		case (.authenticate, false):
+		case (.authentication, false):
 			.credentialAssertion(
 				username: username,
 				fido2Options: .map(from: userVerificationRequirement)
 			)
-		case (.authenticateUsernameless, _):
+		case (.authenticationUsernameless, _):
 			.credentialAssertion(
 				username: nil,
 				fido2Options: .map(from: userVerificationRequirement)

@@ -4,7 +4,7 @@
 // Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
-struct HomeScreenMessage {
+struct Message {
 	enum MessageType {
 		case success
 		case error

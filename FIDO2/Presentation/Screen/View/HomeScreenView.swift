@@ -8,24 +8,26 @@ import SwiftUI
 import SwinjectAutoregistration
 
 struct HomeScreenView: View {
-	enum FocusedField {
-		case username
-	}
-
 	// MARK: Properties
 
 	@StateObject var viewModel: HomeScreenViewModel
 	@FocusState var focusedField: FocusedField?
-	@State var expandedSectionId: HomeScreenViewModel.Section.Id?
+	@State var expandedSectionId: Int?
+	@State var isFido2OptionGroupExpanded: Bool
 
 	// MARK: Initializer
 
-	init(viewModel: HomeScreenViewModel = dependencyContainer ~> HomeScreenViewModel.self, expandedSectionId: HomeScreenViewModel.Section.Id? = nil) {
+	init(
+		viewModel: HomeScreenViewModel = dependencyContainer ~> HomeScreenViewModel.self,
+		expandedSectionId: Int? = nil,
+		isFido2OptionGroupExpanded: Bool = false
+	) {
 		_viewModel = StateObject(wrappedValue: viewModel)
-		_expandedSectionId = State(initialValue: expandedSectionId)
+		_expandedSectionId = State(wrappedValue: expandedSectionId)
+		_isFido2OptionGroupExpanded = State(wrappedValue: isFido2OptionGroupExpanded)
 	}
 
-	// MARK: Body
+	// MARK: View
 
 	var body: some View {
 		LoadingView(isShowing: $viewModel.isLoading) {
@@ -33,9 +35,42 @@ struct HomeScreenView: View {
 				ScrollView {
 					VStack {
 						Text("FIDO 2 Example")
-							.font(.title)
-							.padding(.bottom, 30)
-						sections
+							.appLabel()
+						ForEach(viewModel.sections) { section in
+							Fido2Section(
+								id: section.id.rawValue,
+								title: section.title,
+								buttonLabel: section.buttonTitle,
+								isButtonDisabled: viewModel.username.isEmpty && section.id != .authenticationUsernameless,
+								expandedSectionId: $expandedSectionId,
+								content: {
+									VStack {
+										if [HomeScreenViewModel.Section.ID.registration, HomeScreenViewModel.Section.ID.authentication].contains(section.id) {
+											UsernameTextField(
+												text: $viewModel.username,
+												isAutoFillAssisted: section.id == .authentication,
+												focusedField: $focusedField
+											)
+											.padding(.bottom, 10)
+											FIdo2OptionGroup(
+												isRegistration: section.id == .registration,
+												isExpanded: $isFido2OptionGroupExpanded,
+												userVerificationRequirement: $viewModel.userVerificationRequirement,
+												authenticatorAttachment: $viewModel.authenticatorAttachment,
+												requirementConveyancePreference: $viewModel.requirementConveyancePreference,
+												residentKeyRequirement: $viewModel.residentKeyRequirement
+											)
+											.padding(.bottom, 10)
+										}
+									}
+								},
+								action: {
+									viewModel.startAuthorization(section)
+								},
+								message: viewModel.message,
+								focusedField: $focusedField,
+							)
+						}
 						Spacer()
 						appConfiguration
 					}
@@ -50,40 +85,73 @@ struct HomeScreenView: View {
 		.onTapGesture {
 			focusedField = nil
 		}
+		.onChange(of: expandedSectionId) { _ in
+			viewModel.message = nil
+		}
+	}
+
+	// MARK: Configuration
+
+	var appConfiguration: some View {
+		guard let configuration = viewModel.appConfiguration else {
+			return AnyView(EmptyView())
+		}
+
+		return AnyView(
+			VStack {
+				Text("Host: \(configuration.host)")
+					.font(.footnote)
+			}
+			.appConfigurationBox()
+		)
 	}
 }
 
 // MARK: - Preview
 
 #Preview() {
-	let viewModel = HomeScreenViewModel.preview
+	var viewModel: HomeScreenViewModel = .preview
 	viewModel.username = "User"
 	viewModel.isAutoFillAssistedReady = true
-	return HomeScreenView(viewModel: viewModel, expandedSectionId: .register)
+	return HomeScreenView(
+		viewModel: viewModel,
+		expandedSectionId: 0,
+		isFido2OptionGroupExpanded: true
+	)
 }
 
 #Preview("Authentication") {
-	let viewModel = HomeScreenViewModel.preview
+	var viewModel: HomeScreenViewModel = .preview
 	viewModel.username = "User"
 	viewModel.isAutoFillAssistedReady = true
-	return HomeScreenView(viewModel: viewModel, expandedSectionId: .authenticate)
+	return HomeScreenView(
+		viewModel: viewModel,
+		expandedSectionId: 1,
+		isFido2OptionGroupExpanded: true
+	)
 }
 
 #Preview("Usernameless auth.") {
-	let viewModel = HomeScreenViewModel.preview
-	viewModel.username = "User"
-	viewModel.isAutoFillAssistedReady = true
-	return HomeScreenView(viewModel: viewModel, expandedSectionId: .authenticateUsernameless)
+	HomeScreenView(
+		viewModel: .preview,
+		expandedSectionId: 2
+	)
 }
 
 #Preview("Error message") {
-	let viewModel = HomeScreenViewModel.preview
-	viewModel.message = HomeScreenMessage(type: .error, title: "Error", details: "An error occurred")
-	return HomeScreenView(viewModel: viewModel, expandedSectionId: .register)
+	var viewModel: HomeScreenViewModel = .preview
+	viewModel.message = Message(type: .error, title: "Error", details: "An error occurred")
+	return HomeScreenView(
+		viewModel: viewModel,
+		expandedSectionId: 0
+	)
 }
 
 #Preview("Success message") {
-	let viewModel = HomeScreenViewModel.preview
-	viewModel.message = HomeScreenMessage(type: .success, title: "Success", details: "An error occurred")
-	return HomeScreenView(viewModel: viewModel, expandedSectionId: .authenticate)
+	var viewModel: HomeScreenViewModel = .preview
+	viewModel.message = Message(type: .success, title: "Success", details: "Your authorization token is the following: TOKEN :)")
+	return HomeScreenView(
+		viewModel: viewModel,
+		expandedSectionId: 0
+	)
 }
