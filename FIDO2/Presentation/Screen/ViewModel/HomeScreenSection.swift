@@ -6,13 +6,14 @@
 
 extension HomeScreenViewModel {
 	struct Section: Identifiable {
-		enum Id: String, CaseIterable, Equatable {
-			case register = "Register"
-			case authenticate = "Authenticate"
-			case authenticateUsernameless = "Authenticate (Usernameless)"
+		enum Id: Int, CaseIterable, Equatable {
+			case registration = 0
+			case authentication = 1
+			case authenticationUsernameless = 2
 		}
 
 		let id: Id
 		let title: String
+		let buttonTitle: String
 	}
 }

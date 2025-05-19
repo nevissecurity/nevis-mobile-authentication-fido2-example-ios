@@ -26,8 +26,10 @@ struct LoadingView<Content>: View where Content: View {
 					Text("Loading...")
 					ProgressView()
 				}
-				.frame(width: geometry.size.width / 2,
-				       height: geometry.size.height / 5)
+				.frame(
+					width: geometry.size.width / 2,
+					height: geometry.size.height / 5
+				)
 				.background(Color.secondary.colorInvert())
 				.foregroundColor(.primary)
 				.cornerRadius(20)
