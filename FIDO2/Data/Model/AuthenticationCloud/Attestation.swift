@@ -13,7 +13,7 @@ enum Attestation: String, Codable {
 // MARK: - Map from Domain
 
 extension Attestation? {
-	static func map(from entity: Fido2RequirementConveyancePreference?) -> Attestation? {
+	static func map(from entity: Fido2AttestationConveyancePreference?) -> Attestation? {
 		switch entity {
 		case .none?:
 			Attestation.none

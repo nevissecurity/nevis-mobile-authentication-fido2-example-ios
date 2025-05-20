@@ -20,7 +20,7 @@ struct CredentialCreationOptions: Codable {
 extension CredentialCreationOptions {
 	// MARK: To Domain
 
-	func map() -> Fido2RequirementConveyancePreference? {
+	func map() -> Fido2AttestationConveyancePreference? {
 		.init(rawValue: attestation)
 	}
 }

@@ -21,7 +21,7 @@ enum Fido2AuthenticatorAttachmentViewOption: String, CaseIterable, Equatable, Id
 	case crossPlatform = "Cross-Platform"
 }
 
-enum Fido2RequirementConveyancePreferenceViewOption: String, CaseIterable, Equatable, Identifiable {
+enum Fido2AttestationConveyancePreferenceViewOption: String, CaseIterable, Equatable, Identifiable {
 	var id: Self { self }
 
 	case unspecified = "Unspecified"
@@ -33,11 +33,11 @@ enum Fido2RequirementConveyancePreferenceViewOption: String, CaseIterable, Equat
 // MARK: - Map to Domain
 
 extension Fido2Options {
-	static func map(from options: (Fido2RequirementViewOption, Fido2AuthenticatorAttachmentViewOption, Fido2RequirementConveyancePreferenceViewOption, Fido2RequirementViewOption)) -> Fido2Options {
+	static func map(from options: (Fido2RequirementViewOption, Fido2AuthenticatorAttachmentViewOption, Fido2AttestationConveyancePreferenceViewOption, Fido2RequirementViewOption)) -> Fido2Options {
 		.init(
 			userVerificationRequirement: .map(from: options.0),
 			authenticatorAttachment: .map(from: options.1),
-			requirementConveyancePreference: .map(from: options.2),
+			attestationConveyancePreference: .map(from: options.2),
 			residentKeyRequirement: .map(from: options.3)
 		)
 	}
@@ -77,11 +77,11 @@ extension Fido2AuthenticatorAttachment {
 	}
 }
 
-extension Fido2RequirementConveyancePreference {
-	static func map(from viewModel: Fido2RequirementConveyancePreferenceViewOption) -> Fido2RequirementConveyancePreference? {
+extension Fido2AttestationConveyancePreference {
+	static func map(from viewModel: Fido2AttestationConveyancePreferenceViewOption) -> Fido2AttestationConveyancePreference? {
 		switch viewModel {
 		case .none:
-			Fido2RequirementConveyancePreference.none
+			Fido2AttestationConveyancePreference.none
 		case .indirect:
 			.indirect
 		case .direct:

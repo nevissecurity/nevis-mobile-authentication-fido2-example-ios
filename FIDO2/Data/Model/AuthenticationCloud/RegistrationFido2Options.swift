@@ -32,7 +32,7 @@ extension RegistrationFido2Options {
 
 		return .init(
 			authenticatorSelection: authenticatorSelection,
-			attestation: .map(from: options.requirementConveyancePreference)
+			attestation: .map(from: options.attestationConveyancePreference)
 		)
 	}
 }

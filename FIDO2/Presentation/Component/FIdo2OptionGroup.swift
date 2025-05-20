@@ -14,7 +14,7 @@ struct FIdo2OptionGroup: View {
 	@Binding var isExpanded: Bool
 	@Binding var userVerificationRequirement: Fido2RequirementViewOption
 	@Binding var authenticatorAttachment: Fido2AuthenticatorAttachmentViewOption
-	@Binding var requirementConveyancePreference: Fido2RequirementConveyancePreferenceViewOption
+	@Binding var attestationConveyancePreference: Fido2AttestationConveyancePreferenceViewOption
 	@Binding var residentKeyRequirement: Fido2RequirementViewOption
 
 	// MARK: View
@@ -26,10 +26,12 @@ struct FIdo2OptionGroup: View {
 				VStack {
 					Divider()
 						.padding(.top, 10)
-					optionPicker(title: "User Verification Requirement", selection: $userVerificationRequirement)
 					if isRegistration {
 						optionPicker(title: "Authenticator Attachment", selection: $authenticatorAttachment)
-						optionPicker(title: "Attestation Conveyance Preference", selection: $requirementConveyancePreference, isDisabled: authenticatorAttachment != .crossPlatform)
+					}
+					optionPicker(title: "User Verification Requirement", selection: $userVerificationRequirement, isDisabled: isRegistration && authenticatorAttachment != .crossPlatform)
+					if isRegistration {
+						optionPicker(title: "Attestation Conveyance Preference", selection: $attestationConveyancePreference, isDisabled: authenticatorAttachment != .crossPlatform)
 						optionPicker(title: "Resident Key Requirement", selection: $residentKeyRequirement, isDisabled: authenticatorAttachment != .crossPlatform)
 					}
 				}
@@ -63,18 +65,35 @@ struct FIdo2OptionGroup: View {
 // MARK: - Preview
 
 @available(iOS 17.0, *)
-#Preview() {
+#Preview("Registration") {
 	@Previewable @State var isExpanded = true
 	@Previewable @State var userVerificationRequirement: Fido2RequirementViewOption = .unspecified
 	@Previewable @State var authenticatorAttachment: Fido2AuthenticatorAttachmentViewOption = .unspecified
-	@Previewable @State var requirementConveyancePreference: Fido2RequirementConveyancePreferenceViewOption = .unspecified
+	@Previewable @State var attestationConveyancePreference: Fido2AttestationConveyancePreferenceViewOption = .unspecified
 	@Previewable @State var residentKeyRequirement: Fido2RequirementViewOption = .unspecified
 	FIdo2OptionGroup(
 		isRegistration: true,
 		isExpanded: $isExpanded,
 		userVerificationRequirement: $userVerificationRequirement,
 		authenticatorAttachment: $authenticatorAttachment,
-		requirementConveyancePreference: $requirementConveyancePreference,
+		attestationConveyancePreference: $attestationConveyancePreference,
+		residentKeyRequirement: $residentKeyRequirement
+	)
+}
+
+@available(iOS 17.0, *)
+#Preview("Authentication") {
+	@Previewable @State var isExpanded = true
+	@Previewable @State var userVerificationRequirement: Fido2RequirementViewOption = .unspecified
+	@Previewable @State var authenticatorAttachment: Fido2AuthenticatorAttachmentViewOption = .unspecified
+	@Previewable @State var attestationConveyancePreference: Fido2AttestationConveyancePreferenceViewOption = .unspecified
+	@Previewable @State var residentKeyRequirement: Fido2RequirementViewOption = .unspecified
+	FIdo2OptionGroup(
+		isRegistration: false,
+		isExpanded: $isExpanded,
+		userVerificationRequirement: $userVerificationRequirement,
+		authenticatorAttachment: $authenticatorAttachment,
+		attestationConveyancePreference: $attestationConveyancePreference,
 		residentKeyRequirement: $residentKeyRequirement
 	)
 }
