@@ -57,7 +57,7 @@ struct HomeScreenView: View {
 												isExpanded: $isFido2OptionGroupExpanded,
 												userVerificationRequirement: $viewModel.userVerificationRequirement,
 												authenticatorAttachment: $viewModel.authenticatorAttachment,
-												requirementConveyancePreference: $viewModel.requirementConveyancePreference,
+												attestationConveyancePreference: $viewModel.attestationConveyancePreference,
 												residentKeyRequirement: $viewModel.residentKeyRequirement
 											)
 											.padding(.bottom, 10)
