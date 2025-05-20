@@ -26,7 +26,7 @@ final class HomeScreenViewModel: ObservableObject {
 
 	@Published var userVerificationRequirement: Fido2RequirementViewOption = .unspecified
 	@Published var authenticatorAttachment: Fido2AuthenticatorAttachmentViewOption = .unspecified
-	@Published var requirementConveyancePreference: Fido2RequirementConveyancePreferenceViewOption = .unspecified
+	@Published var attestationConveyancePreference: Fido2AttestationConveyancePreferenceViewOption = .unspecified
 	@Published var residentKeyRequirement: Fido2RequirementViewOption = .unspecified
 
 	private var cancellables: Set<AnyCancellable> = []
@@ -144,7 +144,8 @@ private extension HomeScreenViewModel {
 		$authenticatorAttachment
 			.sink { [weak self] authenticatorAttachement in
 				if authenticatorAttachement != .crossPlatform {
-					self?.requirementConveyancePreference = .unspecified
+					self?.userVerificationRequirement = .unspecified
+					self?.attestationConveyancePreference = .unspecified
 					self?.residentKeyRequirement = .unspecified
 				}
 			}
@@ -160,7 +161,7 @@ private extension HomeScreenViewModel {
 		case (.registration, false):
 			.credentialRegistration(
 				username: username,
-				fido2Options: .map(from: (userVerificationRequirement, authenticatorAttachment, requirementConveyancePreference, residentKeyRequirement))
+				fido2Options: .map(from: (userVerificationRequirement, authenticatorAttachment, attestationConveyancePreference, residentKeyRequirement))
 			)
 		case (.authentication, false):
 			.credentialAssertion(
