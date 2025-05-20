@@ -55,6 +55,7 @@ private extension AuthorizationController {
 			userID: userId,
 		)
 
+		registrationRequest.displayName = username
 		if let attestationPreference = options.attestationPreference {
 			registrationRequest.attestationPreference = ASAuthorizationPublicKeyCredentialAttestationKind(rawValue: attestationPreference.rawValue)
 		}

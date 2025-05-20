@@ -12,7 +12,7 @@ struct AuthorizationCreationOption {
 	var username: String?
 	var challenge: Data?
 	var userId: Data?
-	var attestationPreference: Fido2RequirementConveyancePreference?
+	var attestationPreference: Fido2AttestationConveyancePreference?
 	var authenticatorAttachment: Fido2AuthenticatorAttachment?
 	var userVerificationPreference: Fido2RequirementOption?
 	var residentKeyPreference: Fido2RequirementOption?

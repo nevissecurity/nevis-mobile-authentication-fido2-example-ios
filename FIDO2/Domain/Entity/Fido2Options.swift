@@ -7,7 +7,7 @@
 struct Fido2Options {
 	var userVerificationRequirement: Fido2RequirementOption?
 	var authenticatorAttachment: Fido2AuthenticatorAttachment?
-	var requirementConveyancePreference: Fido2RequirementConveyancePreference?
+	var attestationConveyancePreference: Fido2AttestationConveyancePreference?
 	var residentKeyRequirement: Fido2RequirementOption?
 }
 
@@ -22,7 +22,7 @@ enum Fido2AuthenticatorAttachment: String, Equatable {
 	case crossPlatform = "cross-platform"
 }
 
-enum Fido2RequirementConveyancePreference: String, Equatable {
+enum Fido2AttestationConveyancePreference: String, Equatable {
 	case none
 	case indirect
 	case direct
