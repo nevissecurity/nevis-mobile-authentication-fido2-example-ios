@@ -63,8 +63,8 @@ extension AuthorizationServiceImpl: ASAuthorizationControllerDelegate {
 		guard let authorizationController = controller as? AuthorizationController else { return }
 
 		let completeAuthorizationRequest: CompleteAuthorizationRequest? = switch authorization.credential {
-		case let asResult as ASAuthorizationPlatformPublicKeyCredentialRegistration where authorizationController.startAuthorizationResponse.userName != nil:
-			.credentialRegistration(username: authorizationController.startAuthorizationResponse.userName!, statusToken: authorizationController.startAuthorizationResponse.statusToken, authorizationResult: AuthorizationResult(from: asResult))
+		case let asResult as ASAuthorizationPlatformPublicKeyCredentialRegistration:
+			.credentialRegistration(deviceName: UIDevice.deviceName, statusToken: authorizationController.startAuthorizationResponse.statusToken, authorizationResult: AuthorizationResult(from: asResult))
 		case let asResult as ASAuthorizationPlatformPublicKeyCredentialAssertion:
 			.credentialAssertion(statusToken: authorizationController.startAuthorizationResponse.statusToken, authorizationResult: AuthorizationResult(from: asResult))
 		default:
