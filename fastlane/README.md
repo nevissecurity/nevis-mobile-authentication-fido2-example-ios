@@ -27,6 +27,10 @@ Build and distribute the application
 
  * **`build_number`**: The build number of the application.
 
+ * **`host_name`**: The host name of the backend to connect to.
+
+ * **`backend_access_token`**: The token used to access the backend.
+
 
 
 ### pr
