@@ -44,7 +44,7 @@ extension Fido2Options {
 
 	static func map(from userVerificationRequirement: Fido2RequirementViewOption) -> Fido2Options {
 		.init(
-			userVerificationRequirement: .map(from: userVerificationRequirement),
+			userVerificationRequirement: .map(from: userVerificationRequirement)
 		)
 	}
 }

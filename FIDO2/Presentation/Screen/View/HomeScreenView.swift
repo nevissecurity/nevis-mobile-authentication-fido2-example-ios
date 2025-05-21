@@ -68,7 +68,7 @@ struct HomeScreenView: View {
 									viewModel.startAuthorization(section)
 								},
 								message: viewModel.message,
-								focusedField: $focusedField,
+								focusedField: $focusedField
 							)
 						}
 						Spacer()
