@@ -7,7 +7,7 @@ target_name = "FIDO2 Example"
 app_identifier = "ch.nevis.mobile.authentication.fido2.example"
 match_type = "adhoc"
 output_dir = File.expand_path("output/")
-display_name = "Nevis FIDO2 Example"
+display_name = "Nevis FIDO2 Example iOS"
 
 keychain_password = SecureRandom.base64
 ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
@@ -60,10 +60,14 @@ desc "Build and distribute the application"
 desc "#### Options"
 desc " * **`version`**: The version of the application."
 desc " * **`build_number`**: The build number of the application."
+desc " * **`host_name`**: The host name of the backend to connect to."
+desc " * **`backend_access_token`**: The token used to access the backend."
 desc ""
 lane :main do |options|
+	update_configuration(options)
 	distribute(options)
 rescue => e
+	delete_temp_keychain(ENV["TEMP_KEYCHAIN_NAME"])
 	report_on_error("#{display_name} build failed ❌", e)
 end
 
@@ -94,21 +98,17 @@ private_lane :distribute do |options|
 	)
 
 	build_number = options[:build_number] || get_build_number
-	version = options[:version_number] || get_version_number
+	version = get_version_number
 
 	UI.message("Distributing #{display_name} #{version} (#{build_number}) 📦")
 
 	increment_build_number(build_number:)
-	increment_version_number(version_number: version)
 
 	upload(destination: Destination::FIREBASE)
 	upload(destination: Destination::TESTFLIGHT)
 
 	delete_temp_keychain(keychain_name)
 	report_on_success("#{display_name} build is completed: #{version} (#{build_number}) ✅")
-rescue => e
-	delete_temp_keychain(keychain_name)
-	report_on_error("#{display_name} build failed ❌", e)
 end
 
 desc "Upload the application to the specified destination"
@@ -172,9 +172,6 @@ private_lane :upload do |options|
 		else
 			UI.user_error!("⚠️ provided destination: #{destination} is not supported")
 		end
-	rescue => e
-		delete_temp_keychain(keychain_name)
-		report_on_error("#{display_name} build failed ❌", e)
 	end
 end
 
@@ -194,17 +191,48 @@ private_lane :testflight_app_distribution do
 
 	begin
 		beta_app_review_info = JSON.parse(ENV["BETA_APP_REVIEW_INFO"])
-	rescue JSON::ParserError
-		puts "Could not parse 'BETA_APP_REVIEW_INFO', not setting beta_app_review_info for TestFlight."
+	rescue JSON::ParserError => e
+		puts "Could not parse 'BETA_APP_REVIEW_INFO', not setting beta_app_review_info for TestFlight. Error: #{e}"
+		raise e
 	end
 
 	# Upload App to TestFlight
 	upload_to_testflight(
 		beta_app_review_info:,
 		beta_app_description: "https://github.com/nevissecurity/nevis-mobile-authentication-poc-ios-fido2",
-		groups: "Nevis Testers",
+		groups: ["Nevis Testers"],
 		changelog: "https://docs.nevis.net/mobilesdk/quickstart",
 		distribute_external: true
+	)
+end
+
+desc "Update the host name, access token and the associated domains."
+desc "#### Options"
+desc " * **`host_name`**: The host name of the backend to connect to."
+desc " * **`backend_access_token`**: The token used to access the backend."
+desc ""
+private_lane :update_configuration do |options|
+	host_name = options[:host_name] || ENV["HOST_NAME"]
+	UI.user_error!("⚠️ host_name is not provided") unless host_name
+	backend_access_token = options[:backend_access_token] || ENV["BACKEND_ACCESS_TOKEN"]
+	UI.user_error!("⚠️ backend_access_token is not provided") unless backend_access_token
+
+	update_plist(
+		plist_path: "FIDO2/Resource/Configuration.plist",
+		block: proc do |plist|
+			plist["host"] = host_name
+			plist["accessToken"] = backend_access_token
+		end
+	)
+
+	update_plist(
+		plist_path: "FIDO2/Resource/FIDO2-Example.entitlements",
+		block: proc do |plist|
+			key = "com.apple.developer.associated-domains"
+			plist[key] ||= []
+			domain = "webcredentials:#{host_name}"
+			plist[key] << domain unless plist[key].include?(domain)
+		end
 	)
 end
 

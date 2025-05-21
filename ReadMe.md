@@ -2,6 +2,8 @@
 
 # Nevis Mobile Authentication FIDO2 Example App
 
+[![Verify Pull Request](https://github.com/nevissecurity/nevis-mobile-authentication-poc-ios-fido2/actions/workflows/pr.yml/badge.svg)](https://github.com/nevissecurity/nevis-mobile-authentication-poc-ios-fido2/actions/workflows/pr.yml) -> [![Main Branch Commit](https://github.com/nevissecurity/nevis-mobile-authentication-poc-ios-fido2/actions/workflows/main.yml/badge.svg)](https://github.com/nevissecurity/nevis-mobile-authentication-poc-ios-fido2/actions/workflows/main.yml)
+
 TBD
 
 ## Getting Started
