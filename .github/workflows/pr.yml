@@ -1,0 +1,48 @@
+name: Verify Pull Request
+
+on:
+  pull_request:
+    branches: [ 'main' ]
+    types: [opened, edited, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      runner_type:
+        type: choice
+        required: true
+        description: "Runner type"
+        default: "self-hosted"
+        options:
+          - "self-hosted"
+          - "macos-15"
+
+env:
+  RUBY_VERSION: ${{ vars.RUBY_VERSION }}
+  XCODE_VERSION: ${{ vars.XCODE_VERSION }}
+
+jobs:
+  pr:
+    name: Verify Pull Request
+    runs-on: "${{ github.event.inputs.runner_type || 'self-hosted' }}"
+
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+
+      - name: Cache RubyGem Dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+
+      - name: Run Ruby Linter
+        uses: ./.github/actions/run-ruby-linter
+
+      - name: Run Fastlane
+        uses: maierj/fastlane-action@v3.1.0
+        with:
+          lane: 'pr'
