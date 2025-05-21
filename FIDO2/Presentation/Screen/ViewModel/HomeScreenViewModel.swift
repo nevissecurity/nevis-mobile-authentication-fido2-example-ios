@@ -79,7 +79,7 @@ extension HomeScreenViewModel {
 		message = Message(
 			type: messageType,
 			title: title,
-			details: details,
+			details: details
 		)
 
 		isLoading = false
@@ -144,6 +144,11 @@ private extension HomeScreenViewModel {
 		$authenticatorAttachment
 			.sink { [weak self] authenticatorAttachement in
 				if authenticatorAttachement != .crossPlatform {
+					self?.userVerificationRequirement = .preferred
+					self?.attestationConveyancePreference = .none
+					self?.residentKeyRequirement = .required
+				}
+				else {
 					self?.userVerificationRequirement = .unspecified
 					self?.attestationConveyancePreference = .unspecified
 					self?.residentKeyRequirement = .unspecified

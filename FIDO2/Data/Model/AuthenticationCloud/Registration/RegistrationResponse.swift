@@ -35,7 +35,7 @@ extension RegistrationResponse {
 			userVerificationPreference: credentialCreationOptions.authenticatorSelection.userVerification?.map(),
 			residentKeyPreference: credentialCreationOptions.authenticatorSelection.residentKey?.map(),
 			excludeCredentials: credentialCreationOptions.excludeCredentials.compactMap(\.id.base64UrlDecodedData),
-			pubKeyCredParams: credentialCreationOptions.pubKeyCredParams.map(\.alg),
+			pubKeyCredParams: credentialCreationOptions.pubKeyCredParams.map(\.alg)
 		)
 
 		return .success(.credentialRegistration(username: username, statusToken: enrollment.statusToken, authorizationCreationOption: authorizationCreationOptions))
