@@ -30,9 +30,9 @@ struct LoadingView<Content>: View where Content: View {
 					width: geometry.size.width / 2,
 					height: geometry.size.height / 5
 				)
-				.background(Color.secondary.colorInvert())
-				.foregroundColor(.primary)
-				.cornerRadius(20)
+				.background { Color.secondary.colorInvert() }
+				.foregroundStyle(.primary)
+				.clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
 				.opacity(isShowing ? 1 : 0)
 			}
 		}
