@@ -50,6 +50,6 @@ struct UsernameTextField: View {
 	UsernameTextField(
 		text: $text,
 		isAutoFillAssisted: true,
-		focusedField: $focusedField
+		focusedField: $focusedField,
 	)
 }

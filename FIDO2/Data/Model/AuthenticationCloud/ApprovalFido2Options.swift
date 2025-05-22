@@ -17,7 +17,7 @@ extension ApprovalFido2Options {
 		guard let options else { return nil }
 
 		return .init(
-			userVerification: .map(from: options.userVerificationRequirement)
+			userVerification: .map(from: options.userVerificationRequirement),
 		)
 	}
 }
