@@ -64,7 +64,7 @@ final class HomeScreenViewModel: ObservableObject {
 				},
 				receiveValue: { [weak self] startAuthorizationResponse in
 					self?.authorizationService.start(startAuthorizationResponse, isAutoFillAssisted: false)
-				}
+				},
 			)
 			.store(in: &cancellables)
 	}
@@ -103,7 +103,7 @@ private extension HomeScreenViewModel {
 					guard let self else { return }
 					authorizationService.start(startAuthorizationResponse, isAutoFillAssisted: true)
 					isAutoFillAssistedReady = true
-				}
+				},
 			)
 			.store(in: &cancellables)
 	}
@@ -121,7 +121,7 @@ private extension HomeScreenViewModel {
 				},
 				receiveValue: { [weak self] authorizationToken in
 					self?.setMessage(.success, title: "Authorization successfully completed", details: "Authorization token: \(authorizationToken)")
-				}
+				},
 			)
 			.store(in: &cancellables)
 	}
@@ -144,6 +144,11 @@ private extension HomeScreenViewModel {
 		$authenticatorAttachment
 			.sink { [weak self] authenticatorAttachement in
 				if authenticatorAttachement != .crossPlatform {
+					self?.userVerificationRequirement = .preferred
+					self?.attestationConveyancePreference = .none
+					self?.residentKeyRequirement = .required
+				}
+				else {
 					self?.userVerificationRequirement = .unspecified
 					self?.attestationConveyancePreference = .unspecified
 					self?.residentKeyRequirement = .unspecified
@@ -161,17 +166,17 @@ private extension HomeScreenViewModel {
 		case (.registration, false):
 			.credentialRegistration(
 				username: username,
-				fido2Options: .map(from: (userVerificationRequirement, authenticatorAttachment, attestationConveyancePreference, residentKeyRequirement))
+				fido2Options: .map(from: (userVerificationRequirement, authenticatorAttachment, attestationConveyancePreference, residentKeyRequirement)),
 			)
 		case (.authentication, false):
 			.credentialAssertion(
 				username: username,
-				fido2Options: .map(from: userVerificationRequirement)
+				fido2Options: .map(from: userVerificationRequirement),
 			)
 		case (.authenticationUsernameless, _):
 			.credentialAssertion(
 				username: nil,
-				fido2Options: .map(from: userVerificationRequirement)
+				fido2Options: .map(from: userVerificationRequirement),
 			)
 		default:
 			nil
@@ -208,7 +213,7 @@ extension HomeScreenViewModel {
 			configurationLoader: ConfigurationLoaderImpl.preview,
 			authorizationService: AuthorizationServiceImpl.preview,
 			startAuthorizationUseCase: StartAuthorizationUseCaseImpl.preview,
-			completeAuthorizationUseCase: CompleteAuthorizationUseCaseImpl.preview
+			completeAuthorizationUseCase: CompleteAuthorizationUseCaseImpl.preview,
 		)
 	}
 }

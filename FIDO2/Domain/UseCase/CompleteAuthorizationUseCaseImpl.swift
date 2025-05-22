@@ -19,8 +19,8 @@ final class CompleteAuthorizationUseCaseImpl {
 extension CompleteAuthorizationUseCaseImpl: CompleteAuthorizationUseCase {
 	func execute(_ type: CompleteAuthorizationRequest) -> AnyPublisher<AuthorizationToken, AppError> {
 		switch type {
-		case let .credentialRegistration(username, statusToken, asResult):
-			fido2Repository.completeRegistration(username: username, statusToken: statusToken, authorizationResult: asResult)
+		case let .credentialRegistration(deviceName, statusToken, asResult):
+			fido2Repository.completeRegistration(deviceName: deviceName, statusToken: statusToken, authorizationResult: asResult)
 		case let .credentialAssertion(statusToken, asResult):
 			fido2Repository.completeApproval(statusToken: statusToken, authorizationResult: asResult)
 		}

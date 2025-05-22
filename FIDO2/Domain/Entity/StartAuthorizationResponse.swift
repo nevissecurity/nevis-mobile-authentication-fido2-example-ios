@@ -8,7 +8,7 @@
 
 enum StartAuthorizationResponse {
 	case credentialRegistration(username: String, statusToken: String, authorizationCreationOption: AuthorizationCreationOption)
-	case credentialAssertion(username: String? = nil, statusToken: String, authorizationCreationOption: AuthorizationCreationOption)
+	case credentialAssertion(statusToken: String, authorizationCreationOption: AuthorizationCreationOption)
 }
 
 extension StartAuthorizationResponse {
@@ -16,8 +16,8 @@ extension StartAuthorizationResponse {
 		switch self {
 		case let .credentialRegistration(username, _, _):
 			username
-		case let .credentialAssertion(username, _, _):
-			username
+		case .credentialAssertion:
+			nil
 		}
 	}
 
@@ -25,7 +25,7 @@ extension StartAuthorizationResponse {
 		switch self {
 		case let .credentialRegistration(_, statusToken, _):
 			statusToken
-		case let .credentialAssertion(_, statusToken, _):
+		case let .credentialAssertion(statusToken, _):
 			statusToken
 		}
 	}

@@ -5,6 +5,6 @@
 //
 
 enum CompleteAuthorizationRequest {
-	case credentialRegistration(username: String, statusToken: String, authorizationResult: AuthorizationResult)
+	case credentialRegistration(deviceName: String, statusToken: String, authorizationResult: AuthorizationResult)
 	case credentialAssertion(statusToken: String, authorizationResult: AuthorizationResult)
 }

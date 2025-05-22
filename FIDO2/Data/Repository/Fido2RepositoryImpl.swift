@@ -24,7 +24,7 @@ extension Fido2RepositoryImpl: Fido2Repository {
 		let request = RegistrationRequest(
 			username: username,
 			displayName: username,
-			fido2Options: .map(from: fido2Options)
+			fido2Options: .map(from: fido2Options),
 		)
 
 		return authenticationCloudDataSource.registration(request: request)
@@ -35,7 +35,7 @@ extension Fido2RepositoryImpl: Fido2Repository {
 			.eraseToAnyPublisher()
 	}
 
-	func completeRegistration(username: String, statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<AuthorizationToken, AppError> {
+	func completeRegistration(deviceName: String, statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<AuthorizationToken, AppError> {
 		guard let rawAttestationObject = authorizationResult.rawAttestationObject else {
 			return Fail(error: AppError.missingData(message: "Invalid attestation object received")).eraseToAnyPublisher()
 		}
@@ -45,10 +45,10 @@ extension Fido2RepositoryImpl: Fido2Repository {
 			id: authorizationResult.credentialID.toBase64UrlEncodedString(),
 			response: EnrollmentData(
 				attestationObject: rawAttestationObject.toBase64UrlEncodedString(),
-				clientDataJSON: authorizationResult.rawClientDataJSON.toBase64UrlEncodedString()
+				clientDataJSON: authorizationResult.rawClientDataJSON.toBase64UrlEncodedString(),
 			),
 			statusToken: statusToken,
-			userFriendlyName: username,
+			userFriendlyName: deviceName,
 			userAgent: authenticationCloudDataSource.userAgent,
 		)
 
@@ -65,7 +65,7 @@ extension Fido2RepositoryImpl: Fido2Repository {
 	func startApproval(username: String? = nil, fido2Options: Fido2Options?) -> AnyPublisher<StartAuthorizationResponse, AppError> {
 		let request = ApprovalRequest(
 			username: username,
-			fido2Options: .map(from: fido2Options)
+			fido2Options: .map(from: fido2Options),
 		)
 
 		return authenticationCloudDataSource.approval(request: request)
@@ -94,7 +94,7 @@ extension Fido2RepositoryImpl: Fido2Repository {
 				authenticatorData: rawAuthenticatorData.toBase64UrlEncodedString(),
 				clientDataJSON: authorizationResult.rawClientDataJSON.toBase64UrlEncodedString(),
 				signature: signature.toBase64UrlEncodedString(),
-				userHandle: userID.toBase64UrlEncodedString()
+				userHandle: userID.toBase64UrlEncodedString(),
 			),
 			statusToken: statusToken,
 			userAgent: authenticationCloudDataSource.userAgent,

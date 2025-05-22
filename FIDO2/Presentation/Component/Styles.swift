@@ -18,12 +18,12 @@ extension Text {
 
 	func sectionLabel() -> some View {
 		font(.headline)
-			.foregroundColor(.primary)
+			.foregroundStyle(.primary)
 	}
 
 	func optionGroupLabel() -> some View {
 		font(.subheadline)
-			.foregroundColor(.secondary)
+			.foregroundStyle(.secondary)
 	}
 
 	func optionLabel() -> some View {
@@ -32,7 +32,7 @@ extension Text {
 
 	func optionTitle() -> some View {
 		font(.caption)
-			.foregroundColor(.secondary)
+			.foregroundStyle(.secondary)
 			.frame(maxWidth: .infinity, alignment: .leading)
 	}
 
@@ -60,8 +60,9 @@ extension Text {
 extension Button {
 	func primaryButton(animationValue: Bool) -> some View {
 		frame(maxWidth: .infinity)
-			.padding(5)
+			.tint(.accentColor)
 			.buttonStyle(.borderedProminent)
+			.padding(.bottom, 5)
 			.animation(.easeInOut, value: animationValue)
 	}
 }
@@ -69,23 +70,23 @@ extension Button {
 @MainActor
 extension DisclosureGroup {
 	func fido2Section() -> some View {
-		accentColor(.accentColor)
+		tint(.primary)
 			.padding(10)
-			.background(
+			.background {
 				RoundedRectangle(cornerRadius: 10)
 					.stroke(Color(.separator), lineWidth: 1)
-					.background(Color(.systemGray6).cornerRadius(10))
-			)
+					.background { Color(.systemGray6).cornerRadius(10) }
+			}
 	}
 
 	func fido2OptionGroup() -> some View {
-		accentColor(.secondary)
+		tint(.secondary)
 			.padding(10)
-			.background(
+			.background {
 				RoundedRectangle(cornerRadius: 10)
 					.stroke(Color(.separator), lineWidth: 1)
-					.background(Color(.systemGray5).cornerRadius(10))
-			)
+					.background { Color(.systemGray5).cornerRadius(10) }
+			}
 	}
 }
 
@@ -97,10 +98,10 @@ extension VStack {
 		foregroundColor(color)
 			.padding(10)
 			.background(.white)
-			.overlay(
+			.overlay(alignment: .center, content: {
 				RoundedRectangle(cornerRadius: 10)
 					.stroke(color, lineWidth: 2)
-			)
+			})
 			.clipShape(RoundedRectangle(cornerRadius: 10))
 			.animation(.easeInOut, value: animationValue)
 	}
@@ -108,9 +109,9 @@ extension VStack {
 	func appConfigurationBox() -> some View {
 		frame(maxWidth: .infinity, alignment: .center)
 			.padding(10)
-			.overlay(
+			.overlay(alignment: .center, content: {
 				RoundedRectangle(cornerRadius: 10)
 					.stroke(Color.black, lineWidth: 1)
-			)
+			})
 	}
 }
