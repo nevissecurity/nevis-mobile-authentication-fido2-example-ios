@@ -28,7 +28,7 @@ struct LoadingView<Content>: View where Content: View {
 				}
 				.frame(
 					width: geometry.size.width / 2,
-					height: geometry.size.height / 5
+					height: geometry.size.height / 5,
 				)
 				.background { Color.secondary.colorInvert() }
 				.foregroundStyle(.primary)

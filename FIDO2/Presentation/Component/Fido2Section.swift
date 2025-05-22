@@ -29,7 +29,7 @@ struct Fido2Section<Content>: View, Identifiable where Content: View {
 				get: { expandedSectionId == id },
 				set: { isOpen in
 					expandedSectionId = isOpen ? id : nil
-				}
+				},
 			),
 			content: {
 				VStack {
@@ -52,7 +52,7 @@ struct Fido2Section<Content>: View, Identifiable where Content: View {
 			label: {
 				Text(title)
 					.sectionLabel()
-			}
+			},
 		)
 		.fido2Section()
 	}
@@ -76,6 +76,6 @@ struct Fido2Section<Content>: View, Identifiable where Content: View {
 		},
 		action: {},
 		message: .init(type: .error, title: "Title", details: "Message"),
-		focusedField: $focusedField
+		focusedField: $focusedField,
 	)
 }

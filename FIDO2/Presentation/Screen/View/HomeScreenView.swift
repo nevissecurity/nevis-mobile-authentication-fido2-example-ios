@@ -49,7 +49,7 @@ struct HomeScreenView: View {
 											UsernameTextField(
 												text: $viewModel.username,
 												isAutoFillAssisted: section.id == .authentication,
-												focusedField: $focusedField
+												focusedField: $focusedField,
 											)
 											.padding(.bottom, 10)
 											FIdo2OptionGroup(
@@ -58,7 +58,7 @@ struct HomeScreenView: View {
 												userVerificationRequirement: $viewModel.userVerificationRequirement,
 												authenticatorAttachment: $viewModel.authenticatorAttachment,
 												attestationConveyancePreference: $viewModel.attestationConveyancePreference,
-												residentKeyRequirement: $viewModel.residentKeyRequirement
+												residentKeyRequirement: $viewModel.residentKeyRequirement,
 											)
 											.padding(.bottom, 10)
 										}
@@ -68,7 +68,7 @@ struct HomeScreenView: View {
 									viewModel.startAuthorization(section)
 								},
 								message: viewModel.message,
-								focusedField: $focusedField
+								focusedField: $focusedField,
 							)
 						}
 						Spacer()
@@ -102,7 +102,7 @@ struct HomeScreenView: View {
 				Text("Host: \(configuration.host)")
 					.font(.footnote)
 			}
-			.appConfigurationBox()
+			.appConfigurationBox(),
 		)
 	}
 }
@@ -116,7 +116,7 @@ struct HomeScreenView: View {
 	return HomeScreenView(
 		viewModel: viewModel,
 		expandedSectionId: 0,
-		isFido2OptionGroupExpanded: true
+		isFido2OptionGroupExpanded: true,
 	)
 }
 
@@ -127,14 +127,14 @@ struct HomeScreenView: View {
 	return HomeScreenView(
 		viewModel: viewModel,
 		expandedSectionId: 1,
-		isFido2OptionGroupExpanded: true
+		isFido2OptionGroupExpanded: true,
 	)
 }
 
 #Preview("Usernameless auth.") {
 	HomeScreenView(
 		viewModel: .preview,
-		expandedSectionId: 2
+		expandedSectionId: 2,
 	)
 }
 
@@ -143,7 +143,7 @@ struct HomeScreenView: View {
 	viewModel.message = Message(type: .error, title: "Error", details: "An error occurred")
 	return HomeScreenView(
 		viewModel: viewModel,
-		expandedSectionId: 0
+		expandedSectionId: 0,
 	)
 }
 
@@ -152,6 +152,6 @@ struct HomeScreenView: View {
 	viewModel.message = Message(type: .success, title: "Success", details: "Your authorization token is the following: TOKEN :)")
 	return HomeScreenView(
 		viewModel: viewModel,
-		expandedSectionId: 0
+		expandedSectionId: 0,
 	)
 }

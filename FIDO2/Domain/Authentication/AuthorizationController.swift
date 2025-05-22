@@ -51,7 +51,7 @@ private extension AuthorizationController {
 		let registrationRequest = provider.createCredentialRegistrationRequest(
 			challenge: challenge,
 			name: username,
-			userID: userId
+			userID: userId,
 		)
 
 		registrationRequest.displayName = username
@@ -74,7 +74,7 @@ private extension AuthorizationController {
 			challenge: challenge,
 			displayName: username,
 			name: username,
-			userID: userId
+			userID: userId,
 		)
 
 		if let attestationPreference = options.attestationPreference {

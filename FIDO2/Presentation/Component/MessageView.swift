@@ -28,7 +28,7 @@ struct MessageView: View {
 						.messageDetailsLabel()
 				}
 			}
-			.messageBox(color: color, animationValue: message.title)
+			.messageBox(color: color, animationValue: message.title),
 		)
 	}
 }
@@ -37,9 +37,9 @@ struct MessageView: View {
 
 #Preview() {
 	MessageView(
-		message: .init(type: .error, title: "Failure", details: "Sad message")
+		message: .init(type: .error, title: "Failure", details: "Sad message"),
 	)
 	MessageView(
-		message: .init(type: .success, title: "Success", details: "Happy message")
+		message: .init(type: .success, title: "Success", details: "Happy message"),
 	)
 }

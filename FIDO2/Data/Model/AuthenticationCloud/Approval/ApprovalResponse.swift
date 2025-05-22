@@ -27,7 +27,7 @@ extension ApprovalResponse {
 			username: username,
 			challenge: credentialRequestOptions.challenge.base64UrlDecodedData,
 			userVerificationPreference: credentialRequestOptions.userVerification.map(),
-			allowCredentials: credentialRequestOptions.allowCredentials?.compactMap(\.id.base64UrlDecodedData)
+			allowCredentials: credentialRequestOptions.allowCredentials?.compactMap(\.id.base64UrlDecodedData),
 		)
 
 		return .success(.credentialAssertion(statusToken: statusToken, authorizationCreationOption: authorizationCreationOptions))
