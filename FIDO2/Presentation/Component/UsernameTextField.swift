@@ -21,7 +21,7 @@ struct UsernameTextField: View {
 		TextField("Username", text: $text, prompt: Text(placeholder))
 			.textContentType(isAutoFillAssisted ? .username : nil)
 			.textInputAutocapitalization(.never)
-			.disableAutocorrection(true)
+			.autocorrectionDisabled()
 			.textFieldStyle(.roundedBorder)
 			.focused(focusedField, equals: .username)
 			.overlay {
@@ -31,7 +31,7 @@ struct UsernameTextField: View {
 						Image(systemName: "person.badge.key")
 							.resizable()
 							.frame(width: 20, height: 20)
-							.foregroundColor(.accentColor)
+							.foregroundStyle(.accent)
 							.opacity(isAutoFillAssisted ? 1 : 0)
 							.padding(.trailing, 10)
 							.animation(.easeInOut, value: isAutoFillAssisted)
