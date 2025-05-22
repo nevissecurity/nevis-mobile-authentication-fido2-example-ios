@@ -26,13 +26,13 @@ extension RegistrationFido2Options {
 			authenticatorSelection = .init(
 				authenticatorAttachment: authenticatorAttachment,
 				userVerification: userVerification,
-				residentKey: residentKey
+				residentKey: residentKey,
 			)
 		}
 
 		return .init(
 			authenticatorSelection: authenticatorSelection,
-			attestation: .map(from: options.attestationConveyancePreference)
+			attestation: .map(from: options.attestationConveyancePreference),
 		)
 	}
 }

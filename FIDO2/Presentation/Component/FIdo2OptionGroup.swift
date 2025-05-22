@@ -39,7 +39,7 @@ struct FIdo2OptionGroup: View {
 			label: {
 				Text("Options")
 					.optionGroupLabel()
-			}
+			},
 		)
 		.fido2OptionGroup()
 	}
@@ -77,7 +77,7 @@ struct FIdo2OptionGroup: View {
 		userVerificationRequirement: $userVerificationRequirement,
 		authenticatorAttachment: $authenticatorAttachment,
 		attestationConveyancePreference: $attestationConveyancePreference,
-		residentKeyRequirement: $residentKeyRequirement
+		residentKeyRequirement: $residentKeyRequirement,
 	)
 }
 
@@ -94,6 +94,6 @@ struct FIdo2OptionGroup: View {
 		userVerificationRequirement: $userVerificationRequirement,
 		authenticatorAttachment: $authenticatorAttachment,
 		attestationConveyancePreference: $attestationConveyancePreference,
-		residentKeyRequirement: $residentKeyRequirement
+		residentKeyRequirement: $residentKeyRequirement,
 	)
 }

@@ -26,7 +26,7 @@ extension AppConfiguration {
 	static var preview: AppConfiguration {
 		AppConfiguration(
 			host: "test.com",
-			accessToken: ""
+			accessToken: "",
 		)
 	}
 }

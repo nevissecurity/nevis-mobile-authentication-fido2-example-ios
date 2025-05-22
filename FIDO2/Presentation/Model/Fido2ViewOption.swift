@@ -38,7 +38,7 @@ extension Fido2Options {
 			userVerificationRequirement: .map(from: options.0),
 			authenticatorAttachment: .map(from: options.1),
 			attestationConveyancePreference: .map(from: options.2),
-			residentKeyRequirement: .map(from: options.3)
+			residentKeyRequirement: .map(from: options.3),
 		)
 	}
 

@@ -22,7 +22,7 @@ private extension AuthorizationController {
 		switch response {
 		case let .credentialRegistration(username, _, authorizationCreationOption):
 			try createCredentialRegistrationRequest(username: username, options: authorizationCreationOption)
-		case let .credentialAssertion(_, _, authorizationCreationOption):
+		case let .credentialAssertion(_, authorizationCreationOption):
 			try createCredentialAuthenticationRequest(options: authorizationCreationOption)
 		}
 	}
@@ -38,11 +38,10 @@ private extension AuthorizationController {
 			throw AppError.invalidConversion(message: "Invalid challenge or userId when creating credential registration request for authorization.")
 		}
 
-		return switch options.authenticatorAttachment {
-		case .crossPlatform:
+		return if options.authenticatorAttachment == .crossPlatform {
 			createCrossPlatformSpecificRequest(username: username, challenge: challenge, userId: userId, options: options)
-		case .platform: fallthrough
-		default:
+		}
+		else {
 			createPlatformSpecificRequest(username: username, challenge: challenge, userId: userId, options: options)
 		}
 	}

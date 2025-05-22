@@ -30,6 +30,6 @@ extension ApprovalResponse {
 			allowCredentials: credentialRequestOptions.allowCredentials?.compactMap(\.id.base64UrlDecodedData),
 		)
 
-		return .success(.credentialAssertion(username: username, statusToken: statusToken, authorizationCreationOption: authorizationCreationOptions))
+		return .success(.credentialAssertion(statusToken: statusToken, authorizationCreationOption: authorizationCreationOptions))
 	}
 }
