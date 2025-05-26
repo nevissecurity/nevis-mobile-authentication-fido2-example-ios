@@ -11,6 +11,7 @@ enum AppError: Error {
 	case request(message: String? = nil, underlying: Error? = nil)
 	case missingData(message: String? = nil, underlying: Error? = nil)
 	case invalidConversion(message: String? = nil, underlying: Error? = nil)
+	case notSupported(message: String? = nil, underlying: Error? = nil)
 	case unknown(message: String? = nil, underlying: Error? = nil)
 }
 
@@ -37,6 +38,8 @@ extension AppError: LocalizedError {
 			errorDescription("Missing data", message: message, underlying: underlying)
 		case let .invalidConversion(message, underlying):
 			errorDescription("Invalid conversion", message: message, underlying: underlying)
+		case let .notSupported(message, underlying):
+			errorDescription("Not supported", message: message, underlying: underlying)
 		case let .unknown(message, underlying):
 			errorDescription("Unknown error", message: message, underlying: underlying)
 		}
