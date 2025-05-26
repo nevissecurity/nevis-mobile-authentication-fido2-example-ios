@@ -23,6 +23,8 @@ extension CompleteAuthorizationUseCaseImpl: CompleteAuthorizationUseCase {
 			fido2Repository.completeRegistration(deviceName: deviceName, statusToken: statusToken, authorizationResult: asResult)
 		case let .credentialAssertion(statusToken, asResult):
 			fido2Repository.completeApproval(statusToken: statusToken, authorizationResult: asResult)
+		default:
+			fatalError("Invalid type")
 		}
 	}
 }

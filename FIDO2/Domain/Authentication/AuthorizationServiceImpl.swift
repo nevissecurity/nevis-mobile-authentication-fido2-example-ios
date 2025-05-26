@@ -9,6 +9,7 @@ import Combine
 
 final class AuthorizationServiceImpl: NSObject {
 	private var currentAuthorizationController: AuthorizationController?
+	private var currentWebAuthenticationSession: ASWebAuthenticationSession?
 	private var resultPublisher = PassthroughSubject<Result<CompleteAuthorizationRequest, AuthorizationServiceError>, Never>()
 }
 
@@ -43,16 +44,58 @@ extension AuthorizationServiceImpl: AuthorizationService {
 	func cancel() {
 		currentAuthorizationController?.cancel()
 	}
+
+	func startWeb(url: URL, callbackUrlScheme: String) {
+		if currentWebAuthenticationSession != nil {
+			cancelWeb()
+		}
+
+		currentWebAuthenticationSession = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackUrlScheme) { [weak self] callbackURL, error in
+			if let error {
+				self?.resultPublisher.send(.failure(.failed(isPrefillAssisted: false, underlyingError: error)))
+				return
+			}
+
+			guard
+				let callbackURL,
+				let queryItems = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)?.queryItems
+			else {
+				self?.resultPublisher.send(.failure(.failed(isPrefillAssisted: false, errorMessage: "Invalid callback URL")))
+				return
+			}
+
+			if callbackURL.host == "success", let authorizationToken = queryItems.first(where: { $0.name == "token" })?.value {
+				self?.resultPublisher.send(.success(.completedWebAuthorization(authorizationToken: authorizationToken)))
+				return
+			}
+			self?.resultPublisher.send(.failure(.failed(isPrefillAssisted: false, errorMessage: queryItems.first(where: { $0.name == "error" })?.value ?? "Unknown error")))
+		}
+		currentWebAuthenticationSession?.presentationContextProvider = self
+		currentWebAuthenticationSession?.start()
+	}
+
+	func cancelWeb() {
+		currentWebAuthenticationSession?.cancel()
+	}
 }
 
-// MARK: - ASAuthorizationControllerPresentationContextProviding
+// MARK: - PresentationContextProviding
 
-extension AuthorizationServiceImpl: ASAuthorizationControllerPresentationContextProviding {
-	func presentationAnchor(for _: ASAuthorizationController) -> ASPresentationAnchor {
+extension AuthorizationServiceImpl: ASAuthorizationControllerPresentationContextProviding, ASWebAuthenticationPresentationContextProviding {
+	@MainActor
+	private var presentationAnchor: ASPresentationAnchor {
 		UIApplication.shared.connectedScenes
 			.compactMap { $0 as? UIWindowScene }
 			.first?.windows
 			.first { $0.isKeyWindow } ?? UIWindow()
+	}
+
+	func presentationAnchor(for _: ASAuthorizationController) -> ASPresentationAnchor {
+		presentationAnchor
+	}
+
+	func presentationAnchor(for _: ASWebAuthenticationSession) -> ASPresentationAnchor {
+		presentationAnchor
 	}
 }
 

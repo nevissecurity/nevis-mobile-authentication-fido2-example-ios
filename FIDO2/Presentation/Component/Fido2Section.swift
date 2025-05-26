@@ -46,7 +46,7 @@ struct Fido2Section<Content>: View, Identifiable where Content: View {
 					.primaryButton(animationValue: isButtonDisabled)
 					.disabled(isButtonDisabled)
 					MessageView(message: message)
-						.padding(.top, 10)
+						.padding(.vertical, 5)
 				}
 			},
 			label: {
@@ -72,7 +72,6 @@ struct Fido2Section<Content>: View, Identifiable where Content: View {
 		expandedSectionId: $expandedSectionId,
 		content: {
 			Text("Content")
-				.padding(.vertical, 20)
 		},
 		action: {},
 		message: .init(type: .error, title: "Title", details: "Message"),
