@@ -62,10 +62,12 @@ extension Button {
 		frame(maxWidth: .infinity)
 			.tint(.accentColor)
 			.buttonStyle(.borderedProminent)
-			.padding(.bottom, 5)
+			.padding(.vertical, 5)
 			.animation(.easeInOut, value: animationValue)
 	}
 }
+
+// MARK: - DisclosureGroup
 
 @MainActor
 extension DisclosureGroup {
@@ -108,6 +110,7 @@ extension VStack {
 
 	func appConfigurationBox() -> some View {
 		frame(maxWidth: .infinity, alignment: .center)
+			.font(.footnote)
 			.padding(10)
 			.overlay(alignment: .center, content: {
 				RoundedRectangle(cornerRadius: 10)

@@ -2,11 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>host</key>
-	<string></string>
-	<key>accessToken</key>
-	<string></string>
-	<key>pathForAuthorization</key>
-	<string>fido2-test.html</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fido2.example.app</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

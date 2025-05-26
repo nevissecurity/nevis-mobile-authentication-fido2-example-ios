@@ -41,7 +41,7 @@ struct HomeScreenView: View {
 								id: section.id.rawValue,
 								title: section.title,
 								buttonLabel: section.buttonTitle,
-								isButtonDisabled: viewModel.username.isEmpty && section.id != .authenticationUsernameless,
+								isButtonDisabled: viewModel.username.isEmpty && [.registration, .authentication].contains(section.id),
 								expandedSectionId: $expandedSectionId,
 								content: {
 									VStack {
@@ -60,7 +60,7 @@ struct HomeScreenView: View {
 												attestationConveyancePreference: $viewModel.attestationConveyancePreference,
 												residentKeyRequirement: $viewModel.residentKeyRequirement,
 											)
-											.padding(.bottom, 10)
+											.padding(.bottom, 5)
 										}
 									}
 								},
@@ -100,7 +100,7 @@ struct HomeScreenView: View {
 		return AnyView(
 			VStack {
 				Text("Host: \(configuration.host)")
-					.font(.footnote)
+				Text("Path for Web Authorization: \(configuration.pathForAuthorization)")
 			}
 			.appConfigurationBox(),
 		)

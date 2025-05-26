@@ -10,6 +10,7 @@ extension HomeScreenViewModel {
 			case registration = 0
 			case authentication = 1
 			case authenticationUsernameless = 2
+			case authorizationViaWebview = 3
 		}
 
 		let id: Id
