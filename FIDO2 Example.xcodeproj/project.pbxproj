@@ -18,9 +18,22 @@
 		22C05F162D9F037F00935A3C /* ReadMe.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ReadMe.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		06851D392DE0AA0000CD4310 /* Exceptions for "FIDO2" folder in "FIDO2 Example" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Resource/FIDO2-Example-Info.plist",
+			);
+			target = 22C05E932D9EA47F00935A3C /* FIDO2 Example */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		22C05E962D9EA47F00935A3C /* FIDO2 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				06851D392DE0AA0000CD4310 /* Exceptions for "FIDO2" folder in "FIDO2 Example" target */,
+			);
 			path = FIDO2;
 			sourceTree = "<group>";
 		};
@@ -312,6 +325,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FIDO2/Resource/FIDO2-Example-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "FIDO2 Example";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -349,6 +363,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FIDO2/Resource/FIDO2-Example-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "FIDO2 Example";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";

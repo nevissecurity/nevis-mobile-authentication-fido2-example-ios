@@ -7,7 +7,7 @@
 import Foundation
 
 enum AuthorizationServiceError: Error {
-	case failed(isPrefillAssisted: Bool, underlyingError: Error?)
+	case failed(isPrefillAssisted: Bool, errorMessage: String? = nil, underlyingError: Error? = nil)
 	case canceled(isPrefillAssisted: Bool)
 }
 
@@ -16,8 +16,8 @@ enum AuthorizationServiceError: Error {
 extension AuthorizationServiceError: LocalizedError {
 	var errorDescription: String? {
 		switch self {
-		case let .failed(isPrefillAssisted, underlyingError):
-			"Authorization failed\(isPrefillAssisted ? " with prefill assistance" : ""). \(underlyingError?.localizedDescription ?? "")"
+		case let .failed(isPrefillAssisted, errorMessage, underlyingError):
+			"Authorization failed\(isPrefillAssisted ? " with prefill assistance" : "").\((errorMessage != nil) ? " \(errorMessage!)" : "")\(underlyingError?.localizedDescription != nil ? "  \(underlyingError!.localizedDescription)" : "")"
 		case let .canceled(isPrefillAssisted):
 			"Authorization canceled\(isPrefillAssisted ? " with prefill assistance" : "")."
 		}

@@ -24,6 +24,8 @@ private extension AuthorizationController {
 			try createCredentialRegistrationRequest(username: username, options: authorizationCreationOption)
 		case let .credentialAssertion(_, authorizationCreationOption):
 			try createCredentialAuthenticationRequest(options: authorizationCreationOption)
+		default:
+			fatalError("Invalid authorization request.")
 		}
 	}
 }

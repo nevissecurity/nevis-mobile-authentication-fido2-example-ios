@@ -48,7 +48,7 @@ private extension ConfigurationLoaderImpl {
 extension ConfigurationLoaderImpl {
 	static var preview: ConfigurationLoaderImpl {
 		let config = ConfigurationLoaderImpl()
-		config.appConfig = AppConfiguration(host: "<host>", accessToken: "<AccessToken>")
+		config.appConfig = AppConfiguration(host: "<host>", accessToken: "<AccessToken>", pathForAuthorization: "<Path>")
 		return config
 	}
 }
