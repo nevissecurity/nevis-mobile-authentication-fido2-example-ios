@@ -10,13 +10,18 @@ import Foundation
 struct AppConfiguration: Codable, Sendable {
 	let host: String
 	let accessToken: String
+	let pathForAuthorization: String
 }
 
 // MARK: - Helper
 
 extension AppConfiguration {
-	var baseUrl: URL? {
-		URL(string: "https://\(host)/")
+	var baseUrl: URL {
+		URL(string: "https://\(host)/") ?? .empty
+	}
+
+	var webAuthorizationUrl: URL {
+		URL(string: "\(baseUrl.absoluteString)\(pathForAuthorization)") ?? .empty
 	}
 }
 
@@ -27,6 +32,7 @@ extension AppConfiguration {
 		AppConfiguration(
 			host: "test.com",
 			accessToken: "",
+			pathForAuthorization: "path",
 		)
 	}
 }

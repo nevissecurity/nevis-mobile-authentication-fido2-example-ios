@@ -22,6 +22,7 @@ final class HomeScreenViewModel: ObservableObject {
 		.init(id: .registration, title: "Registration", buttonTitle: "Register"),
 		.init(id: .authentication, title: "Authentication", buttonTitle: "Authenticate"),
 		.init(id: .authenticationUsernameless, title: "Authentication (Usernameless)", buttonTitle: "Authenticate"),
+		.init(id: .authorizationViaWebview, title: "Authorization via Web", buttonTitle: "Start"),
 	]
 
 	@Published var userVerificationRequirement: Fido2RequirementViewOption = .unspecified
@@ -63,7 +64,13 @@ final class HomeScreenViewModel: ObservableObject {
 					}
 				},
 				receiveValue: { [weak self] startAuthorizationResponse in
-					self?.authorizationService.start(startAuthorizationResponse, isAutoFillAssisted: false)
+					switch startAuthorizationResponse {
+					case .credentialRegistration,
+					     .credentialAssertion:
+						self?.authorizationService.start(startAuthorizationResponse, isAutoFillAssisted: false)
+					default:
+						self?.isLoading = false
+					}
 				},
 			)
 			.store(in: &cancellables)
@@ -178,6 +185,8 @@ private extension HomeScreenViewModel {
 				username: nil,
 				fido2Options: .map(from: userVerificationRequirement),
 			)
+		case (.authorizationViaWebview, _):
+			.webAuthorization(url: appConfiguration?.webAuthorizationUrl ?? .empty, callbackUrlScheme: Bundle.main.urlSchemes.first ?? "")
 		default:
 			nil
 		}
@@ -192,7 +201,12 @@ private extension HomeScreenViewModel {
 			.sink { [weak self] result in
 				switch result {
 				case let .success(authorization):
-					self?.completeAuthorization(authorization)
+					switch authorization {
+					case let .completedWebAuthorization(authorizationToken):
+						self?.setMessage(.success, title: "Authorization successfully completed", details: "Authorization token: \(authorizationToken)")
+					default:
+						self?.completeAuthorization(authorization)
+					}
 				case let .failure(error):
 					if case let .canceled(isAutoFillAssisted) = error, isAutoFillAssisted {
 						return
