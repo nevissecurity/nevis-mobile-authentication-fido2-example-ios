@@ -11,13 +11,14 @@ outputs:
 
 runs:
     using: composite
-
     steps:
-        - name: Get version number
+        - name: Get Version Number
           id: get_version_number
           shell: bash
           run: |
-            echo "VERSION=$(grep -m1 'MARKETING_VERSION' 'FIDO2 Example.xcodeproj/project.pbxproj' | sed 's/.*MARKETING_VERSION = \([^;]*\);.*/\1/')" >> "$GITHUB_OUTPUT"
+            VERSION=`grep -m1 'MARKETING_VERSION' 'FIDO2 Example.xcodeproj/project.pbxproj' | sed 's/.*MARKETING_VERSION = \([^;]*\);.*/\1/'`
+            echo "version_number=$(echo $VERSION)" >> $GITHUB_OUTPUT
+            echo Version number is $VERSION
 
         - name: Generate Build Number
           id: get_build_number
