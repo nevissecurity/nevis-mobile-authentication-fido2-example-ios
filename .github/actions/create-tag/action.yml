@@ -3,10 +3,10 @@ description: Creates a tag
 
 inputs:
     app-version:
-        description: The current version of the Application
+        description: The current version of the application
         required: true
     build-number:
-        description: The current build-number of the Application
+        description: The current build number of the application
         required: true
     build-category:
         description: The category of the tag to be created
