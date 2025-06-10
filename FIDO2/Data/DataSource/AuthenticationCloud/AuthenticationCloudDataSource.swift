@@ -14,6 +14,7 @@ protocol AuthenticationCloudDataSource {
 	func attestation(request: AttestationRequest) -> AnyPublisher<AttestationResponse, MoyaError>
 	func approval(request: ApprovalRequest) -> AnyPublisher<ApprovalResponse, MoyaError>
 	func assertion(request: AssertionRequest) -> AnyPublisher<AssertionResponse, MoyaError>
+	func introspect(request: IntrospectRequest) -> AnyPublisher<IntrospectResponse, MoyaError>
 
 	func errorMessage(from moyaError: MoyaError) -> String?
 }

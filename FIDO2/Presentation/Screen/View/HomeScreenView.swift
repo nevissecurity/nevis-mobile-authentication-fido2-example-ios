@@ -40,7 +40,9 @@ struct HomeScreenView: View {
 							Fido2Section(
 								id: section.id.rawValue,
 								title: section.title,
-								buttonLabel: section.buttonTitle,
+								buttons: section.buttons.map { button in
+									(button.label, { viewModel.startAuthorization(button) })
+								},
 								isButtonDisabled: viewModel.username.isEmpty && [.registration, .authentication].contains(section.id),
 								expandedSectionId: $expandedSectionId,
 								content: {
@@ -63,9 +65,6 @@ struct HomeScreenView: View {
 											.padding(.bottom, 5)
 										}
 									}
-								},
-								action: {
-									viewModel.startAuthorization(section)
 								},
 								message: viewModel.message,
 								focusedField: $focusedField,

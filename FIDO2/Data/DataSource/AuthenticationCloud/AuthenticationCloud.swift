@@ -14,6 +14,7 @@ enum AuthenticationCloud: TargetType, AccessTokenAuthorizable {
 	case attestation(request: AttestationRequest)
 	case approval(request: ApprovalRequest)
 	case assertion(request: AssertionRequest)
+	case introspect(request: IntrospectRequest)
 
 	var baseURL: URL {
 		(try? (dependencyContainer ~> ConfigurationLoader.self).config.baseUrl) ?? URL(string: "https://")!
@@ -29,6 +30,8 @@ enum AuthenticationCloud: TargetType, AccessTokenAuthorizable {
 			"api/v1/approval"
 		case .assertion:
 			"_app/assertion/result"
+		case .introspect:
+			"api/v1/introspect"
 		}
 	}
 
@@ -46,13 +49,22 @@ enum AuthenticationCloud: TargetType, AccessTokenAuthorizable {
 			.requestJSONEncodable(request)
 		case let .assertion(request):
 			.requestJSONEncodable(request)
+		case let .introspect(request):
+			.requestParameters(parameters: request.asDictionary, encoding: URLEncoding.httpBody)
 		}
 	}
 
 	var headers: [String: String]? {
-		[
-			"Content-Type": "application/json",
-		]
+		switch self {
+		case .introspect:
+			[
+				"Content-Type": "application/x-www-form-urlencoded",
+			]
+		default:
+			[
+				"Content-Type": "application/json",
+			]
+		}
 	}
 
 	var authorizationType: AuthorizationType? {

@@ -11,4 +11,5 @@ protocol Fido2Repository {
 	func completeRegistration(deviceName: String, statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<AuthorizationToken, AppError>
 	func startApproval(username: String?, fido2Options: Fido2Options?) -> AnyPublisher<StartAuthorizationResponse, AppError>
 	func completeApproval(statusToken: String, authorizationResult: AuthorizationResult) -> AnyPublisher<AuthorizationToken, AppError>
+	func introspect(token: String) -> AnyPublisher<IntrospectInfo, AppError>
 }
