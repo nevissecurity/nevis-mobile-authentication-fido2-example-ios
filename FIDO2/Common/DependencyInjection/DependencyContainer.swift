@@ -36,6 +36,7 @@ final class DependencyProvider: Sendable {
 
 		container.autoregister(StartAuthorizationUseCase.self, initializer: StartAuthorizationUseCaseImpl.init).inObjectScope(.transient)
 		container.autoregister(CompleteAuthorizationUseCase.self, initializer: CompleteAuthorizationUseCaseImpl.init).inObjectScope(.transient)
+		container.autoregister(IntrospectUseCase.self, initializer: IntrospectUseCaseImpl.init).inObjectScope(.transient)
 
 		// MARK: Repositories
 

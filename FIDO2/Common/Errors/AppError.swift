@@ -7,6 +7,7 @@
 import Foundation
 
 enum AppError: Error {
+	case configuration(message: String? = nil, underlying: Error? = nil)
 	case network(message: String? = nil, underlying: Error? = nil)
 	case request(message: String? = nil, underlying: Error? = nil)
 	case missingData(message: String? = nil, underlying: Error? = nil)
@@ -30,6 +31,8 @@ extension AppError: LocalizedError {
 
 	var errorDescription: String? {
 		switch self {
+		case let .configuration(message, underlying):
+			errorDescription("Configuration error", message: message, underlying: underlying)
 		case let .network(message, underlying):
 			errorDescription("Network error", message: message, underlying: underlying)
 		case let .request(message, underlying):
