@@ -107,6 +107,18 @@ extension Fido2RepositoryImpl: Fido2Repository {
 			.mapError(mapError)
 			.eraseToAnyPublisher()
 	}
+
+	// MARK: Introspection
+
+	func introspect(token: String) -> AnyPublisher<IntrospectInfo, AppError> {
+		let request = IntrospectRequest(token: token)
+		return authenticationCloudDataSource.introspect(request: request)
+			.map { introspectResponse in
+				introspectResponse.map()
+			}
+			.mapError(mapError)
+			.eraseToAnyPublisher()
+	}
 }
 
 // MARK: - Error mapping
