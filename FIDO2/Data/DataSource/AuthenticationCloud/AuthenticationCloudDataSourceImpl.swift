@@ -39,6 +39,10 @@ extension AuthenticationCloudDataSourceImpl: AuthenticationCloudDataSource {
 		execute(target: .assertion(request: request))
 	}
 
+	func introspect(request: IntrospectRequest) -> AnyPublisher<IntrospectResponse, MoyaError> {
+		execute(target: .introspect(request: request))
+	}
+
 	func errorMessage(from moyaError: Moya.MoyaError) -> String? {
 		guard case let .statusCode(response) = moyaError else {
 			return moyaError.localizedDescription

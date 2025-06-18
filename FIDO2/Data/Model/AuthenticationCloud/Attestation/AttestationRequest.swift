@@ -4,7 +4,7 @@
 // Copyright © 2025 Nevis Security AG. All rights reserved.
 //
 
-struct AttestationRequest: Codable {
+struct AttestationRequest: Encodable {
 	let type: String
 	let id: String
 	let response: EnrollmentData

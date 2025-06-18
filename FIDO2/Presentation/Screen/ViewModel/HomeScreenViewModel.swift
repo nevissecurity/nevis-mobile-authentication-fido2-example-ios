@@ -19,10 +19,10 @@ final class HomeScreenViewModel: ObservableObject {
 
 	@Published var username: String = ""
 	@Published var sections: [Section] = [
-		.init(id: .registration, title: "Registration", buttonTitle: "Register"),
-		.init(id: .authentication, title: "Authentication", buttonTitle: "Authenticate"),
-		.init(id: .authenticationUsernameless, title: "Authentication (Usernameless)", buttonTitle: "Authenticate"),
-		.init(id: .authorizationViaWebview, title: "Authorization via Web", buttonTitle: "Start"),
+		.init(id: .registration, title: "Registration", buttons: [.init(.registration, "Register")]),
+		.init(id: .authentication, title: "Authentication", buttons: [.init(.authentication, "Authenticate")]),
+		.init(id: .authenticationUsernameless, title: "Authentication (Usernameless)", buttons: [.init(.authenticationUsernameless, "Authenticate")]),
+		.init(id: .authorizationViaWebview, title: "Authorization via Web", buttons: [.init(.registrationViaWebview, "Register via Web"), .init(.authenticationViaWebview, "Authenticate via Web")]),
 	]
 
 	@Published var userVerificationRequirement: Fido2RequirementViewOption = .unspecified
@@ -34,13 +34,15 @@ final class HomeScreenViewModel: ObservableObject {
 	private let authorizationService: AuthorizationService
 	private let startAuthorizationUseCase: StartAuthorizationUseCase
 	private let completeAuthorizationUseCase: CompleteAuthorizationUseCase
+	private let introspectUseCase: IntrospectUseCase
 
 	// MARK: Initializer
 
-	init(configurationLoader: ConfigurationLoader, authorizationService: AuthorizationService, startAuthorizationUseCase: StartAuthorizationUseCase, completeAuthorizationUseCase: CompleteAuthorizationUseCase) {
+	init(configurationLoader: ConfigurationLoader, authorizationService: AuthorizationService, startAuthorizationUseCase: StartAuthorizationUseCase, completeAuthorizationUseCase: CompleteAuthorizationUseCase, introspectUseCase: IntrospectUseCase) {
 		self.authorizationService = authorizationService
 		self.startAuthorizationUseCase = startAuthorizationUseCase
 		self.completeAuthorizationUseCase = completeAuthorizationUseCase
+		self.introspectUseCase = introspectUseCase
 
 		loadConfiguration(configurationLoader)
 		optionValidations()
@@ -50,8 +52,8 @@ final class HomeScreenViewModel: ObservableObject {
 
 	// MARK: Authorization
 
-	func startAuthorization(_ section: Section) {
-		guard let authorizationRequest = authorizationRequest(for: section) else { return }
+	func startAuthorization(_ sectionButton: SectionButton) {
+		guard let authorizationRequest = authorizationRequest(for: sectionButton) else { return }
 		clearMessage()
 		isLoading = true
 		startAuthorizationUseCase.execute(authorizationRequest)
@@ -127,7 +129,31 @@ private extension HomeScreenViewModel {
 					self?.startAutoFillAssistedAuthorization()
 				},
 				receiveValue: { [weak self] authorizationToken in
-					self?.setMessage(.success, title: "Authorization successfully completed", details: "Authorization token: \(authorizationToken)")
+					self?.introspectAuthorizationToken(authorizationToken)
+				},
+			)
+			.store(in: &cancellables)
+	}
+
+	func introspectAuthorizationToken(_ token: AuthorizationToken) {
+		introspectUseCase.execute(token: token)
+			.receive(on: DispatchQueue.main)
+			.sink(
+				receiveCompletion: { [weak self] completion in
+					if case let .failure(error) = completion {
+						self?.setMessage(.error, title: "Introspect failed", details: error.localizedDescription)
+					}
+				},
+				receiveValue: { [weak self] info in
+					let title = "Token is \(info.isActive ? "valid" : "invalid")"
+					var details: [String] = []
+					if let issuedAt = info.issuedAt {
+						details.append("Issued at: \(Date(epochInMillis: issuedAt).formatted)")
+					}
+					if let subject = info.subject {
+						details.append("User ID: \(subject)")
+					}
+					self?.setMessage(info.isActive ? .success : .error, title: title, details: details.joined(separator: "\n"))
 				},
 			)
 			.store(in: &cancellables)
@@ -168,8 +194,8 @@ private extension HomeScreenViewModel {
 // MARK: - Authorization requests
 
 private extension HomeScreenViewModel {
-	func authorizationRequest(for section: Section) -> StartAuthorizationRequest? {
-		switch (section.id, username.isEmpty) {
+	func authorizationRequest(for sectionButton: SectionButton) -> StartAuthorizationRequest? {
+		switch (sectionButton.id, username.isEmpty) {
 		case (.registration, false):
 			.credentialRegistration(
 				username: username,
@@ -185,8 +211,10 @@ private extension HomeScreenViewModel {
 				username: nil,
 				fido2Options: .map(from: userVerificationRequirement),
 			)
-		case (.authorizationViaWebview, _):
-			.webAuthorization(url: appConfiguration?.webAuthorizationUrl ?? .empty, callbackUrlScheme: Bundle.main.urlSchemes.first ?? "")
+		case (.registrationViaWebview, _):
+			.credentialRegistrationViaWeb
+		case (.authenticationViaWebview, _):
+			.credentialAssertionViaWeb
 		default:
 			nil
 		}
@@ -203,7 +231,7 @@ private extension HomeScreenViewModel {
 				case let .success(authorization):
 					switch authorization {
 					case let .completedWebAuthorization(authorizationToken):
-						self?.setMessage(.success, title: "Authorization successfully completed", details: "Authorization token: \(authorizationToken)")
+						self?.introspectAuthorizationToken(authorizationToken)
 					default:
 						self?.completeAuthorization(authorization)
 					}
@@ -228,6 +256,7 @@ extension HomeScreenViewModel {
 			authorizationService: AuthorizationServiceImpl.preview,
 			startAuthorizationUseCase: StartAuthorizationUseCaseImpl.preview,
 			completeAuthorizationUseCase: CompleteAuthorizationUseCaseImpl.preview,
+			introspectUseCase: IntrospectUseCaseImpl.preview,
 		)
 	}
 }

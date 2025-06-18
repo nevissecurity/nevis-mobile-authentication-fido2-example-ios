@@ -11,12 +11,10 @@ struct Fido2Section<Content>: View, Identifiable where Content: View {
 
 	let id: Int
 	let title: String
-	let buttonLabel: String
-
+	let buttons: [(String, () -> ())]
 	var isButtonDisabled: Bool = false
 	@Binding var expandedSectionId: Int?
 	var content: () -> (Content)
-	var action: () -> ()
 	var message: Message?
 
 	var focusedField: FocusState<FocusedField?>.Binding
@@ -36,15 +34,18 @@ struct Fido2Section<Content>: View, Identifiable where Content: View {
 					Divider()
 						.padding(.vertical, 10)
 					content()
-					Button(action: {
-						print("Button \(title) clicked")
-						action()
-					}) {
-						Text(buttonLabel)
-							.primaryButtonLabel()
+					ForEach(Array(buttons.enumerated()), id: \.0) { _, button in
+						let (buttonLabel, action) = button
+						Button(action: {
+							print("Button \(buttonLabel) clicked")
+							action()
+						}) {
+							Text(buttonLabel)
+								.primaryButtonLabel()
+						}
+						.primaryButton(animationValue: isButtonDisabled)
+						.disabled(isButtonDisabled)
 					}
-					.primaryButton(animationValue: isButtonDisabled)
-					.disabled(isButtonDisabled)
 					MessageView(message: message)
 						.padding(.vertical, 5)
 				}
@@ -67,13 +68,15 @@ struct Fido2Section<Content>: View, Identifiable where Content: View {
 	Fido2Section(
 		id: 0,
 		title: "Section",
-		buttonLabel: "Button",
+		buttons: [
+			("Register", { print("Register clicked") }),
+			("Authenticate", { print("Authenticate clicked") }),
+		],
 		isButtonDisabled: false,
 		expandedSectionId: $expandedSectionId,
 		content: {
 			Text("Content")
 		},
-		action: {},
 		message: .init(type: .error, title: "Title", details: "Message"),
 		focusedField: $focusedField,
 	)
