@@ -35,6 +35,8 @@ Edit the [Configuration.plist](FIDO2/Resource/Configuration.plist) file and repl
 
 Edit the [FIDO2-Example.entitlements](FIDO2/Resource/FIDO2-Example.entitlements) file and update the associated domains for web credentials with your Authentication Cloud instance.
 
+Edit the [FIDO2-Example-Info.plist](FIDO2/Resource/FIDO2-Example-Info.plist) file and set the first value in the `CFBundleURLSchemes` array to the URL scheme used by your Authentication Cloud instance for redirecting back to the app after webview authorization.
+
 ### Build & run
 
 Now you're ready to build and run the example app by choosing Product > Run from Xcode's menu or by clicking the Run button in your project’s toolbar.

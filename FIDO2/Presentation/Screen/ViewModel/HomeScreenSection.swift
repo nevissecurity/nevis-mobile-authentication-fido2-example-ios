@@ -13,8 +13,10 @@ extension HomeScreenViewModel {
 			case authorizationViaWebview = 3
 		}
 
+		// MARK: Properties
+
 		let id: Id
 		let title: String
-		let buttonTitle: String
+		let buttons: [SectionButton]
 	}
 }
