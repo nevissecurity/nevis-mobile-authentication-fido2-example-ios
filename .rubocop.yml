@@ -1,77 +1,71 @@
-inherit_gem:
-  team_fastlane-rubocop: default.yml
-
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 3.1
+  TargetRubyVersion: 3.4
 
-Rails:
-  Enabled: false  # Disables all Rails cops
+# Layout Cops
 
 Layout/IndentationStyle:
+  Description: 'Uses tabs per indentation level.'
+  StyleGuide: 'https://rubystyle.guide/#spaces-indentation'
   EnforcedStyle: tabs
-Layout/IndentationWidth:
-  Width: 1
-Layout/ArgumentAlignment:
-  EnforcedStyle: with_first_argument
-Layout/FirstArgumentIndentation:
-  EnforcedStyle: consistent_relative_to_receiver
-Layout/FirstHashElementIndentation:
-  EnforcedStyle: consistent
-Layout/FirstArrayElementIndentation:
-  EnforcedStyle: consistent
-Layout/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: space
-  EnforcedStyleForEmptyBraces: no_space
-Layout/LineLength:
-  Max: 250
 
-Naming/PredicateName:
-  Enabled: false
-Naming/FileName:
-  Exclude:
-    - '*.podspec'
+Layout/IndentationWidth:
+  Description: 'Uses indentation width 1.'
+  StyleGuide: 'https://rubystyle.guide/#spaces-indentation'
+  Width: 1
+
+Layout/FirstArgumentIndentation:
+  Description: 'Checks the indentation of the first argument in a method call.'
+  EnforcedStyle: consistent_relative_to_receiver
+
+Layout/FirstHashElementIndentation:
+  Description: 'Checks the indentation of the first key in a hash literal.'
+  EnforcedStyle: consistent
+
+Layout/FirstArrayElementIndentation:
+  Description: 'Checks the indentation of the first element in an array literal.'
+  EnforcedStyle: consistent
+
+Layout/LineLength:
+  Description: 'Limits lines to 120 characters.'
+  StyleGuide: 'https://rubystyle.guide/#max-line-length'
+  Max: 120
+
+# Style Cops
 
 Style/StringLiterals:
+  Description: 'Checks if uses of quotes match the configured preference.'
+  StyleGuide: 'https://rubystyle.guide/#consistent-string-literals'
   EnforcedStyle: double_quotes
-Style/TrailingCommaInArguments:
-  Enabled: false
-Style/TrailingCommaInArrayLiteral:
-  Enabled: false
-Style/TrailingCommaInHashLiteral:
-  Enabled: false
+
 Style/FrozenStringLiteralComment:
   Enabled: false
+
 Style/FetchEnvVar:
+  Description: 'Suggests ENV.fetch for the replacement of ENV[].'
+  StyleGuide: 'https://rubystyle.guide/#hash-fetch-defaults'
   Enabled: false
-Style/HashSyntax:
-  Exclude:
-    - 'Podfile'
-Style/WordArray:
-  EnforcedStyle: brackets
-Style/SymbolArray:
-  EnforcedStyle: brackets
+
 Style/MultilineIfModifier:
+  Description: 'Checks for uses of if/unless modifiers with multiple-lines bodies.'
+  StyleGuide: 'https://rubystyle.guide/#no-multiline-if-modifiers'
   Enabled: false
+
 Style/RescueStandardError:
+  Description: 'Checks for rescuing StandardError.'
   EnforcedStyle: implicit
 
-Lint/ConstantDefinitionInBlock:
-  Exclude:
-    - 'fastlane/Fastfile'
-Lint/UselessAssignment:
-  Enabled: false
+# Metrics Cops
 
 Metrics/AbcSize:
-  Max: 46
+  Description: 'Checks that the ABC size of methods is not higher than the configured maximum.'
+  Max: 30
+
 Metrics/BlockLength:
-  AllowedMethods: platform
-  Max: 60
-Metrics/ClassLength:
-  Max: 200
-Metrics/CyclomaticComplexity:
-  Max: 14
+  Description: 'Checks if the length of a block exceeds some maximum value.'
+  Max: 50
+
 Metrics/MethodLength:
-  Max: 100
-Metrics/PerceivedComplexity:
-  Max: 17
+  Description: 'Checks if the length of a method exceeds some maximum value.'
+  StyleGuide: 'https://rubystyle.guide/#short-methods'
+  Max: 15
