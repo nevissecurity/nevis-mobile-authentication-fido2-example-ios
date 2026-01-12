@@ -137,7 +137,7 @@ private_lane :upload do |options|
 			use_automatic_signing: false,
 			team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
 			code_sign_identity: ENV["CODE_SIGNING_IDENTITY"],
-			profile_name: ENV["sigh_#{app_identifier}_#{match_type}_profile-name"],
+			profile_name: ENV["sigh_#{app_identifier}_#{match_type}_profile-name"]
 		)
 
 		# Build
@@ -154,7 +154,7 @@ private_lane :upload do |options|
 				}
 			},
 			output_directory: "#{output_dir}/builds",
-			xcargs: "OTHER_CODE_SIGN_FLAGS=\"--keychain=#{keychain_name}\"",
+			xcargs: "OTHER_CODE_SIGN_FLAGS=\"--keychain=#{keychain_name}\""
 		)
 
 		# Distribute
