@@ -13,7 +13,9 @@ on:
         default: "self-hosted"
         options:
           - "self-hosted"
-          - "macos-15"
+          - "shared-nevis-mbp"
+          - "shared-nevis-mbp-zh"
+          - "macos-26"
 
 env:
   RUBY_VERSION: ${{ vars.RUBY_VERSION }}
