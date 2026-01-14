@@ -15,7 +15,10 @@ on:
         default: "self-hosted"
         options:
           - "self-hosted"
-          - "macos-15"
+          - "shared-nevis-mbp"
+          - "shared-nevis-mbp-zh"
+          - "macos-26"
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
