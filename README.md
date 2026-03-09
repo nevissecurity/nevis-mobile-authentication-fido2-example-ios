@@ -1,4 +1,8 @@
-![Nevis Logo](https://www.nevis.net/hubfs/Nevis/images/logotype.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://www.nevis.net/hubfs/Nevis%202023%20theme/Icons/negativ.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://www.nevis.net/hubfs/Nevis%202023%20theme/Icons/positiv.svg">
+  <img alt="Fallback image description" src="https://www.nevis.net/hubfs/Nevis/images/logotype.svg">
+</picture>
 
 # Nevis Mobile Authentication FIDO2 Example App
 
