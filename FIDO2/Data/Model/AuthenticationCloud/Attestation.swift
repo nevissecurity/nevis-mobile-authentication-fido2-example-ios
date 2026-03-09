@@ -1,9 +1,12 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// DTO enum for the WebAuthn `attestation` conveyance preference field.
+///
+/// One-way mapping from the domain ``Fido2AttestationConveyancePreference`` (used when building requests).
 enum Attestation: String, Codable {
 	case none
 	case indirect

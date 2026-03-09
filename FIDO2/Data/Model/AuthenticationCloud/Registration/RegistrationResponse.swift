@@ -1,9 +1,11 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// DTO for the `POST /api/v1/users/enroll` response that includes the enrollment session
+/// and the WebAuthn credential creation options.
 struct RegistrationResponse: ServerResponse {
 	var errorMessage: String?
 	var status: String?

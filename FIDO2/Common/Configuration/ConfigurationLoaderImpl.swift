@@ -1,11 +1,13 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import Foundation
 
+/// Concrete implementation of ``ConfigurationLoader`` that reads `Configuration.plist`
+/// from the main bundle and caches the decoded result.
 final class ConfigurationLoaderImpl {
 	private(set) var appConfig: AppConfiguration?
 }
@@ -13,6 +15,9 @@ final class ConfigurationLoaderImpl {
 // MARK: - ConfigurationLoader
 
 extension ConfigurationLoaderImpl: ConfigurationLoader {
+	/// Returns the cached configuration if available; otherwise reads and caches it from the bundle.
+	///
+	/// - Throws: ``AppError/configuration(_:_:)`` if the plist is missing or cannot be decoded.
 	var config: AppConfiguration {
 		get throws {
 			guard let appConfig else {

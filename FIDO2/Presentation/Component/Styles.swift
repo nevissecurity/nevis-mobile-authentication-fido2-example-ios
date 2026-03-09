@@ -1,7 +1,7 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
@@ -58,6 +58,7 @@ extension Text {
 
 @MainActor
 extension Button {
+	/// Applies the app's primary button style: full-width, accent-colored, bordered-prominent.
 	func primaryButton(animationValue: Bool) -> some View {
 		frame(maxWidth: .infinity)
 			.tint(.accentColor)

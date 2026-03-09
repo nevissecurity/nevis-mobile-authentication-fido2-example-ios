@@ -1,9 +1,12 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// DTO enum for the WebAuthn `userVerification` field, used in server request/response DTOs.
+///
+/// Bidirectional mapping between this DTO type and the domain ``Fido2RequirementOption``.
 enum UserVerification: String, Codable {
 	case preferred
 	case required

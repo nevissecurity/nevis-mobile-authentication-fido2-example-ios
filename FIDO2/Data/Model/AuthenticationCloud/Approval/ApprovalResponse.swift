@@ -1,9 +1,11 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// DTO for the `POST /api/v1/approval` response containing the credential request options
+/// needed to drive the passkey assertion.
 struct ApprovalResponse: ServerResponse {
 	var errorMessage: String?
 	var status: String?
