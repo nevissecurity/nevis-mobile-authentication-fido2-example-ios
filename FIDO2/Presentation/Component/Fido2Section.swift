@@ -1,11 +1,17 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
 
+/// A collapsible `DisclosureGroup` section on the home screen.
+///
+/// Contains a divider, optional content (username field, option group), action buttons,
+/// and a ``MessageView`` for displaying the operation result.
+///
+/// Only one section is expanded at a time, controlled by `expandedSectionId`.
 struct Fido2Section<Content>: View, Identifiable where Content: View {
 	// MARK: Properties
 

@@ -1,11 +1,17 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import AuthenticationServices
 
+/// A thin subclass of `ASAuthorizationController` that carries the originating
+/// ``StartAuthorizationResponse`` and the auto-fill flag through the delegate lifecycle.
+///
+/// It acts as the bridge between the domain layer (use cases / options) and the
+/// AuthenticationServices framework. Factory methods translate ``AuthorizationCreationOption``
+/// into the appropriate `ASAuthorizationRequest` subclass.
 final class AuthorizationController: ASAuthorizationController {
 	let startAuthorizationResponse: StartAuthorizationResponse
 	let isAutoFillAssisted: Bool
@@ -33,6 +39,10 @@ private extension AuthorizationController {
 // MARK: - Registration
 
 private extension AuthorizationController {
+	/// Creates a platform (Face ID / Touch ID) or cross-platform (security key) registration
+	/// request depending on the ``AuthorizationCreationOption/authenticatorAttachment`` value.
+	///
+	/// - Throws: ``AppError/invalidConversion`` if `challenge` or `userId` are missing.
 	static func createCredentialRegistrationRequest(username: String, options: AuthorizationCreationOption) throws -> some ASAuthorizationRequest {
 		guard let challenge = options.challenge,
 		      let userId = options.userId
@@ -106,6 +116,12 @@ private extension AuthorizationController {
 // MARK: - Authentication
 
 private extension AuthorizationController {
+	/// Creates an assertion request for passkey-based authentication.
+	///
+	/// If `allowCredentials` is populated the system will filter available passkeys to
+	/// that list; otherwise all discoverable credentials for the RP are eligible.
+	///
+	/// - Throws: ``AppError/invalidConversion`` if the `challenge` is missing.
 	static func createCredentialAuthenticationRequest(options: AuthorizationCreationOption) throws -> some ASAuthorizationRequest {
 		guard let challenge = options.challenge else {
 			throw AppError.invalidConversion(message: "Invalid challenge when creating credential authentication request for authorization.")

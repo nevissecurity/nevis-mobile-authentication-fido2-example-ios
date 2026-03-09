@@ -1,11 +1,12 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import Combine
 
+/// Concrete implementation of ``IntrospectUseCase``.
 final class IntrospectUseCaseImpl {
 	private let fido2Repository: Fido2Repository
 

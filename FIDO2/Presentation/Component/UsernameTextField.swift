@@ -1,11 +1,17 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
 
+/// A text field for entering a username, with optional passkey auto-fill integration.
+///
+/// When `isAutoFillAssisted` is `true`:
+/// - `.textContentType(.username)` is set, which triggers iOS to offer passkeys
+///   via the QuickType bar (auto-fill assisted FIDO2 authentication).
+/// - A key icon overlay is shown to signal the auto-fill state to the user.
 struct UsernameTextField: View {
 	// MARK: Properties
 

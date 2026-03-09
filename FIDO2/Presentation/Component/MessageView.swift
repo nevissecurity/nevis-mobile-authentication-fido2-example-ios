@@ -1,11 +1,15 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
 
+/// Displays an operation result message with a colored border.
+///
+/// Success messages are rendered in green; error messages in red.
+/// When `message` is `nil`, an `EmptyView` is rendered instead.
 struct MessageView: View {
 	// MARK: Properties
 

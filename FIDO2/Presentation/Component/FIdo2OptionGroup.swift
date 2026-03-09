@@ -1,11 +1,19 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
 
+/// A collapsible `DisclosureGroup` that exposes the four FIDO2 policy option pickers.
+///
+/// When `isRegistration` is `true`, the authenticator attachment, attestation conveyance
+/// preference, and resident key pickers are also shown. Some pickers are disabled when
+/// the authenticator attachment is not set to `.crossPlatform` because those options only
+/// apply to roaming authenticators.
+///
+/// Note: the filename contains a known capitalisation typo (`FIdo2`) — do not rename.
 struct FIdo2OptionGroup: View {
 	// MARK: Properties
 

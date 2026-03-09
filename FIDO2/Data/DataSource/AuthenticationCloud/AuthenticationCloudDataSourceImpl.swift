@@ -1,13 +1,15 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import Combine
 import Foundation
 import Moya
 
+/// Concrete implementation of ``AuthenticationCloudDataSource`` backed by a
+/// `MoyaProvider<AuthenticationCloud>`.
 final class AuthenticationCloudDataSourceImpl {
 	private let provider: MoyaProvider<AuthenticationCloud>
 
@@ -61,10 +63,18 @@ extension AuthenticationCloudDataSourceImpl: AuthenticationCloudDataSource {
 // MARK: - Execute using Publisher
 
 private extension AuthenticationCloudDataSourceImpl {
+	/// Sends `target` to the Moya provider and decodes the response body as `T`.
+	///
+	/// Validates the HTTP status code (200–299) before attempting JSON decoding.
+	/// Any non-Moya error from the decoding step is wrapped in `MoyaError.underlying`.
+	///
+	/// - Parameter target: The ``AuthenticationCloud`` endpoint to call.
+	/// - Returns: A publisher that emits a decoded `T` or fails with `MoyaError`.
 	func execute<T: Decodable>(target: AuthenticationCloud) -> AnyPublisher<T, MoyaError> {
 		provider.requestPublisher(target)
 			.tryMap { response -> T in
 				guard (200 ... 299).contains(response.statusCode) else {
+					// Non-2xx status: wrap as a status code error so callers can inspect the body.
 					throw MoyaError.statusCode(response)
 				}
 				return try JSONDecoder().decode(T.self, from: response.data)

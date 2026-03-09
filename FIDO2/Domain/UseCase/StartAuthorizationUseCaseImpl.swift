@@ -1,12 +1,16 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import Combine
 import Foundation
 
+/// Concrete implementation of ``StartAuthorizationUseCase``.
+///
+/// Coordinates between ``Fido2Repository`` (for server-side challenge acquisition)
+/// and ``AuthorizationService`` (for triggering the system FIDO2 UI).
 final class StartAuthorizationUseCaseImpl {
 	private let configurationLoader: ConfigurationLoader
 	private let fido2Repository: Fido2Repository
@@ -22,6 +26,10 @@ final class StartAuthorizationUseCaseImpl {
 // MARK: - StartAuthorizationUseCase
 
 extension StartAuthorizationUseCaseImpl: StartAuthorizationUseCase {
+	/// Routes the request to the correct repository call based on the ``StartAuthorizationRequest`` type:
+	/// - `.credentialRegistration` → ``Fido2Repository/startRegistration(username:fido2Options:)``
+	/// - `.credentialAssertion` → ``Fido2Repository/startApproval(username:fido2Options:)``
+	/// - `.credentialRegistrationViaWeb` / `.credentialAssertionViaWeb` → ``AuthorizationService/startWeb(url:callbackUrlScheme:)``
 	func execute(_ type: StartAuthorizationRequest) -> AnyPublisher<StartAuthorizationResponse, AppError> {
 		switch type {
 		case let .credentialRegistration(username, fido2Options):

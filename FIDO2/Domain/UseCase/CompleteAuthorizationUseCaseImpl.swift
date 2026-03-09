@@ -1,11 +1,12 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import Combine
 
+/// Concrete implementation of ``CompleteAuthorizationUseCase``.
 final class CompleteAuthorizationUseCaseImpl {
 	private let fido2Repository: Fido2Repository
 
@@ -17,6 +18,10 @@ final class CompleteAuthorizationUseCaseImpl {
 // MARK: - CompleteAuthorizationUseCase
 
 extension CompleteAuthorizationUseCaseImpl: CompleteAuthorizationUseCase {
+	/// Routes to the correct repository completion method:
+	/// - `.credentialRegistration` → ``Fido2Repository/completeRegistration(deviceName:statusToken:authorizationResult:)``
+	/// - `.credentialAssertion` → ``Fido2Repository/completeApproval(statusToken:authorizationResult:)``
+	/// - `.completedWebAuthorization` → handled by the view model directly; calling this with that case is a programming error.
 	func execute(_ type: CompleteAuthorizationRequest) -> AnyPublisher<AuthorizationToken, AppError> {
 		switch type {
 		case let .credentialRegistration(deviceName, statusToken, asResult):

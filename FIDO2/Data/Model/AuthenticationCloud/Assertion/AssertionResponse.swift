@@ -1,9 +1,10 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// DTO for the `POST /_app/assertion/result` response containing the JWT authorization token.
 struct AssertionResponse: ServerResponse {
 	var errorMessage: String?
 	var status: String?
