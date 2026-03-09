@@ -1,7 +1,7 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025. Nevis Security AG. All rights reserved.
+// Copyright © 2026. Nevis Security AG. All rights reserved.
 //
 
 import UIKit
@@ -30,6 +30,11 @@ extension UIDevice {
 		}
 	}
 
+	/// A human-readable device name string sent to the server during passkey registration.
+	///
+	/// Format: `"iOS (<model identifier>) <dd MMM yyyy HH:mm:ss>"`.
+	/// On simulator the model identifier is resolved from the `SIMULATOR_MODEL_IDENTIFIER`
+	/// environment variable.
 	static var deviceName: String {
 		let dateFormatter = DateFormatter()
 		dateFormatter.locale = Locale(identifier: "en_US_POSIX")

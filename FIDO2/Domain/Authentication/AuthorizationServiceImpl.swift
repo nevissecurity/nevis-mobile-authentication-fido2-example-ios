@@ -1,12 +1,17 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import AuthenticationServices
 import Combine
 
+/// Concrete implementation of ``AuthorizationService``.
+///
+/// Maintains at most one active `ASAuthorizationController` and one active
+/// `ASWebAuthenticationSession` at a time. Results are forwarded via a
+/// `PassthroughSubject` to all subscribers of ``onComplete``.
 final class AuthorizationServiceImpl: NSObject {
 	private var currentAuthorizationController: AuthorizationController?
 	private var currentWebAuthenticationSession: ASWebAuthenticationSession?
@@ -105,6 +110,9 @@ extension AuthorizationServiceImpl: ASAuthorizationControllerDelegate {
 	func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
 		guard let authorizationController = controller as? AuthorizationController else { return }
 
+		// Extract FIDO2 data from the credential type returned by ASAuthorizationController:
+		// • Registration → credentialID + rawClientDataJSON + rawAttestationObject
+		// • Assertion    → credentialID + rawClientDataJSON + rawAuthenticatorData + signature + userID
 		let completeAuthorizationRequest: CompleteAuthorizationRequest? = switch authorization.credential {
 		case let asResult as ASAuthorizationPlatformPublicKeyCredentialRegistration:
 			.credentialRegistration(deviceName: UIDevice.deviceName, statusToken: authorizationController.startAuthorizationResponse.statusToken, authorizationResult: AuthorizationResult(from: asResult))

@@ -1,9 +1,13 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// View-layer representation of a FIDO2 requirement (user verification or resident key).
+///
+/// `unspecified` is the "use server default" state. Maps to ``Fido2RequirementOption`` via
+/// `Fido2RequirementOption.map(from:)`.
 enum Fido2RequirementViewOption: String, CaseIterable, Equatable, Identifiable {
 	var id: Self { self }
 
@@ -13,6 +17,10 @@ enum Fido2RequirementViewOption: String, CaseIterable, Equatable, Identifiable {
 	case discouraged = "Discouraged"
 }
 
+/// View-layer representation of the authenticator attachment preference.
+///
+/// `unspecified` means no constraint. Maps to ``Fido2AuthenticatorAttachment`` via
+/// `Fido2AuthenticatorAttachment.map(from:)`.
 enum Fido2AuthenticatorAttachmentViewOption: String, CaseIterable, Equatable, Identifiable {
 	var id: Self { self }
 
@@ -21,6 +29,10 @@ enum Fido2AuthenticatorAttachmentViewOption: String, CaseIterable, Equatable, Id
 	case crossPlatform = "Cross-Platform"
 }
 
+/// View-layer representation of the attestation conveyance preference.
+///
+/// `unspecified` means use server default. Maps to ``Fido2AttestationConveyancePreference`` via
+/// `Fido2AttestationConveyancePreference.map(from:)`.
 enum Fido2AttestationConveyancePreferenceViewOption: String, CaseIterable, Equatable, Identifiable {
 	var id: Self { self }
 

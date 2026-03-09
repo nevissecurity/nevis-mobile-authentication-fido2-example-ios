@@ -1,12 +1,22 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
 import SwinjectAutoregistration
 
+/// The main (and only) screen of the app.
+///
+/// Displays:
+/// - A title label
+/// - A ``Fido2Section`` for each authorization type (registration, authentication,
+///   usernameless authentication, web authorization)
+/// - A ``FIdo2OptionGroup`` inside the registration and authentication sections
+///   for configuring FIDO2 policy options
+/// - A ``LoadingView`` overlay while operations are in progress
+/// - The configured host and web-authorization path at the bottom
 struct HomeScreenView: View {
 	// MARK: Properties
 

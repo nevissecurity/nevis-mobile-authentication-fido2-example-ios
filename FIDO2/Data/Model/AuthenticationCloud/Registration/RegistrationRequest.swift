@@ -1,9 +1,10 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// DTO for the `POST /api/v1/users/enroll` request that kicks off the registration ceremony.
 struct RegistrationRequest: Encodable {
 	let username: String
 	var channel: String? = "fido2"

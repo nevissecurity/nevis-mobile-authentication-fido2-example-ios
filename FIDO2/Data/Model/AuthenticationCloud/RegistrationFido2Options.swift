@@ -1,9 +1,10 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// DTO for the optional FIDO2 policy options sent with a registration request.
 struct RegistrationFido2Options: Codable {
 	var authenticatorSelection: AuthenticatorSelection?
 	var attestation: Attestation?

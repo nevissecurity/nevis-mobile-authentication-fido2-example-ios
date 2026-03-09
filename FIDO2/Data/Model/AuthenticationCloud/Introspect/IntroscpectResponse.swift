@@ -1,11 +1,15 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025. Nevis Security AG. All rights reserved.
+// Copyright © 2026. Nevis Security AG. All rights reserved.
 //
 
 import Foundation
 
+/// DTO for the `POST /api/v1/introspect` response, containing standard JWT introspection claims
+/// as defined in RFC 7662.
+///
+/// Note: the filename contains a known typo (`IntroscpectResponse`) — do not rename.
 struct IntrospectResponse: Decodable {
 	let active: Bool?
 	let iat: Int64?

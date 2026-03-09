@@ -1,12 +1,16 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
 
-/// A view that displays a loading indicator over the content
+/// A transparent overlay that blurs and disables the underlying content while showing
+/// a centered "Loading…" spinner.
+///
+/// Set `isShowing` to `true` to activate the overlay; set it to `false` to
+/// restore the content. The transition is animated with `.easeInOut`.
 struct LoadingView<Content>: View where Content: View {
 	// MARK: Properties
 

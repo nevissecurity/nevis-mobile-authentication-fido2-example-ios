@@ -1,7 +1,7 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025. Nevis Security AG. All rights reserved.
+// Copyright © 2026. Nevis Security AG. All rights reserved.
 //
 
 import Foundation

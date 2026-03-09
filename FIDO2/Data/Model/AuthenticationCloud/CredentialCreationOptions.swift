@@ -1,9 +1,11 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// DTO representing the WebAuthn `PublicKeyCredentialCreationOptions` returned by the server
+/// during the registration ceremony (from `/api/v1/users/enroll`).
 struct CredentialCreationOptions: Codable {
 	let user: User
 	let challenge: String

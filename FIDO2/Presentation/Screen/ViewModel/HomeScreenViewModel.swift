@@ -1,23 +1,40 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import AuthenticationServices
 import Combine
 import SwiftUI
 
+/// The single view model driving ``HomeScreenView``.
+///
+/// Coordinates the full FIDO2 authorization lifecycle:
+/// 1. The view triggers ``startAuthorization(_:)`` with a ``SectionButton``.
+/// 2. ``startAuthorization(_:)`` calls ``StartAuthorizationUseCase`` to get server options.
+/// 3. ``AuthorizationService`` presents the system passkey or web UI.
+/// 4. On completion, ``completeAuthorization(_:)`` calls ``CompleteAuthorizationUseCase``.
+/// 5. The resulting JWT is introspected and the result displayed via ``message``.
+///
+/// Web authorization callbacks are handled via SwiftUI's `.onOpenURL` modifier, which
+/// calls ``AuthorizationService/startWeb(url:callbackUrlScheme:)`` internally.
 final class HomeScreenViewModel: ObservableObject {
 	// MARK: Properties
 
+	/// Whether a network or authorization operation is in progress.
 	@Published var isLoading = false
+	/// Whether the auto-fill assisted passkey assertion request has been registered with the OS.
 	@Published var isAutoFillAssistedReady = false
 
+	/// The last operation result message, shown in the active section. `nil` when cleared.
 	@Published var message: Message?
+	/// The loaded app configuration (host, token, path), or `nil` if not yet loaded.
 	@Published private(set) var appConfiguration: AppConfiguration?
 
+	/// The username entered by the user for registration or authentication.
 	@Published var username: String = ""
+	/// The list of sections shown in the home screen.
 	@Published var sections: [Section] = [
 		.init(id: .registration, title: "Registration", buttons: [.init(.registration, "Register")]),
 		.init(id: .authentication, title: "Authentication", buttons: [.init(.authentication, "Authenticate")]),
@@ -25,9 +42,13 @@ final class HomeScreenViewModel: ObservableObject {
 		.init(id: .authorizationViaWebview, title: "Authorization via Web", buttons: [.init(.registrationViaWebview, "Register via Web"), .init(.authenticationViaWebview, "Authenticate via Web")]),
 	]
 
+	/// The user verification requirement selected in the FIDO2 options UI.
 	@Published var userVerificationRequirement: Fido2RequirementViewOption = .unspecified
+	/// The authenticator attachment constraint selected in the FIDO2 options UI.
 	@Published var authenticatorAttachment: Fido2AuthenticatorAttachmentViewOption = .unspecified
+	/// The attestation conveyance preference selected in the FIDO2 options UI.
 	@Published var attestationConveyancePreference: Fido2AttestationConveyancePreferenceViewOption = .unspecified
+	/// The resident key requirement selected in the FIDO2 options UI.
 	@Published var residentKeyRequirement: Fido2RequirementViewOption = .unspecified
 
 	private var cancellables: Set<AnyCancellable> = []
@@ -52,6 +73,8 @@ final class HomeScreenViewModel: ObservableObject {
 
 	// MARK: Authorization
 
+	/// Clears the current message, sets `isLoading`, and starts the authorization flow
+	/// corresponding to the tapped section button.
 	func startAuthorization(_ sectionButton: SectionButton) {
 		guard let authorizationRequest = authorizationRequest(for: sectionButton) else { return }
 		clearMessage()

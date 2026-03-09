@@ -1,9 +1,12 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
+/// DTO enum for the WebAuthn `authenticatorAttachment` field.
+///
+/// Bidirectional mapping between this DTO type and the domain ``Fido2AuthenticatorAttachment``.
 enum AuthenticatorAttachment: String, Codable {
 	case platform
 	case crossPlatform = "cross-platform"

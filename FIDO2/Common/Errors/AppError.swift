@@ -1,18 +1,29 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import Foundation
 
+/// The unified error type used throughout the application.
+///
+/// All layers convert their lower-level errors into `AppError` before surfacing
+/// them to the presentation layer.
 enum AppError: Error {
+	/// Thrown when the app configuration (host, token, entitlements) is invalid or missing.
 	case configuration(message: String? = nil, underlying: Error? = nil)
+	/// Thrown when a network request fails at the transport layer (e.g. no connectivity, TLS error).
 	case network(message: String? = nil, underlying: Error? = nil)
+	/// Thrown when the server returns an application-level error (non-2xx status or error payload).
 	case request(message: String? = nil, underlying: Error? = nil)
+	/// Thrown when a required piece of data is absent in the response (e.g. attestation object).
 	case missingData(message: String? = nil, underlying: Error? = nil)
+	/// Thrown when a data conversion fails (e.g. Base64URL decoding, type casting).
 	case invalidConversion(message: String? = nil, underlying: Error? = nil)
+	/// Thrown when a requested operation is not supported by the current device or configuration.
 	case notSupported(message: String? = nil, underlying: Error? = nil)
+	/// Thrown as a catch-all for unexpected errors that don't fit any other category.
 	case unknown(message: String? = nil, underlying: Error? = nil)
 }
 
