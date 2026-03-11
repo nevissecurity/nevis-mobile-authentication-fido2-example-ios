@@ -8,8 +8,12 @@
 ///
 /// All fields are Base64URL-encoded binary values.
 struct ApprovalData: Codable {
+	/// The Base64URL-encoded authenticator data.
 	let authenticatorData: String
+	/// The Base64URL-encoded client data JSON.
 	let clientDataJSON: String
+	/// The Base64URL-encoded signature produced by the authenticator.
 	let signature: String
+	/// The Base64URL-encoded user handle identifying the credential owner.
 	let userHandle: String
 }

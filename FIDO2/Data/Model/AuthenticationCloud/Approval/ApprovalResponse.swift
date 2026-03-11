@@ -10,15 +10,23 @@ struct ApprovalResponse: ServerResponse {
 	var errorMessage: String?
 	var status: String?
 
+	/// The server-side transaction identifier for this authentication session.
 	let transactionId: String
+	/// The user identifier associated with the authentication attempt, or `nil` for usernameless flows.
 	var userId: String?
+	/// The opaque token required to complete the authentication ceremony.
 	let statusToken: String
+	/// The WebAuthn credential request options needed to drive the passkey assertion.
 	let credentialRequestOptions: CredentialRequestOptions
 }
 
 // MARK: - Map to domain
 
 extension ApprovalResponse {
+	/// Maps this response to a domain ``StartAuthorizationResponse``.
+	///
+	/// - Parameter username: The username associated with the authentication attempt, or `nil` for usernameless flows.
+	/// - Returns: `.success` with a `.credentialAssertion` response, or `.failure` with an ``AppError`` if the server returned an error.
 	func map(username: String? = nil) -> Result<StartAuthorizationResponse, AppError> {
 		if isError {
 			return .failure(AppError.request(message: errorMessage))

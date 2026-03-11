@@ -25,54 +25,64 @@ enum AuthenticationCloud: TargetType, AccessTokenAuthorizable {
 	/// Token introspection — POST `/api/v1/introspect`.
 	case introspect(request: IntrospectRequest)
 
+	/// The base URL of the Authentication Cloud instance, resolved from the app configuration.
 	var baseURL: URL {
 		(try? (dependencyContainer ~> ConfigurationLoader.self).config.baseUrl) ?? URL(string: "https://")!
 	}
 
+	/// The relative URL path for the endpoint (appended to ``baseURL``).
 	var path: String {
 		switch self {
-		case .registration:
-			"api/v1/users/enroll"
-		case .attestation:
-			"_app/attestation/result"
-		case .approval:
-			"api/v1/approval"
-		case .assertion:
-			"_app/assertion/result"
-		case .introspect:
-			"api/v1/introspect"
+			case .registration:
+				"api/v1/users/enroll"
+			case .attestation:
+				"_app/attestation/result"
+			case .approval:
+				"api/v1/approval"
+			case .assertion:
+				"_app/assertion/result"
+			case .introspect:
+				"api/v1/introspect"
 		}
 	}
 
+	/// The HTTP method; all Authentication Cloud endpoints use POST.
 	var method: Moya.Method {
 		.post
 	}
 
+	/// The Moya task describing how the request body is encoded for each endpoint.
+	///
+	/// JSON-encodable for registration, attestation, approval, and assertion;
+	/// form-URL-encoded for introspect.
 	var task: Task {
 		switch self {
-		case let .registration(request):
-			.requestJSONEncodable(request)
-		case let .attestation(request):
-			.requestJSONEncodable(request)
-		case let .approval(request):
-			.requestJSONEncodable(request)
-		case let .assertion(request):
-			.requestJSONEncodable(request)
-		case let .introspect(request):
-			.requestParameters(parameters: request.asDictionary, encoding: URLEncoding.httpBody)
+			case let .registration(request):
+				.requestJSONEncodable(request)
+			case let .attestation(request):
+				.requestJSONEncodable(request)
+			case let .approval(request):
+				.requestJSONEncodable(request)
+			case let .assertion(request):
+				.requestJSONEncodable(request)
+			case let .introspect(request):
+				.requestParameters(parameters: request.asDictionary, encoding: URLEncoding.httpBody)
 		}
 	}
 
+	/// HTTP headers for the endpoint.
+	///
+	/// Introspect uses `application/x-www-form-urlencoded`; all other endpoints use `application/json`.
 	var headers: [String: String]? {
 		switch self {
-		case .introspect:
-			[
-				"Content-Type": "application/x-www-form-urlencoded",
-			]
-		default:
-			[
-				"Content-Type": "application/json",
-			]
+			case .introspect:
+				[
+					"Content-Type": "application/x-www-form-urlencoded"
+				]
+			default:
+				[
+					"Content-Type": "application/json"
+				]
 		}
 	}
 

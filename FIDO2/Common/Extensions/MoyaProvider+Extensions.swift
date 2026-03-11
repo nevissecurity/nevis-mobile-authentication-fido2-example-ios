@@ -10,6 +10,7 @@ import Moya
 
 // Extend MoyaProvider to support Combine publishing if not already available
 extension MoyaProvider {
+	/// The default HTTP `User-Agent` header value reported by Alamofire.
 	var userAgent: String {
 		HTTPHeader.defaultUserAgent.value
 	}

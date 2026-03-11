@@ -20,12 +20,13 @@ enum AuthorizationServiceError: Error {
 // MARK: - LocalizedError
 
 extension AuthorizationServiceError: LocalizedError {
+	/// A human-readable description of the error, conforming to `LocalizedError`.
 	var errorDescription: String? {
 		switch self {
-		case let .failed(isPrefillAssisted, errorMessage, underlyingError):
-			"Authorization failed\(isPrefillAssisted ? " with prefill assistance" : "").\((errorMessage != nil) ? " \(errorMessage!)" : "")\(underlyingError?.localizedDescription != nil ? "  \(underlyingError!.localizedDescription)" : "")"
-		case let .canceled(isPrefillAssisted):
-			"Authorization canceled\(isPrefillAssisted ? " with prefill assistance" : "")."
+			case let .failed(isPrefillAssisted, errorMessage, underlyingError):
+				"Authorization failed\(isPrefillAssisted ? " with prefill assistance" : "").\((errorMessage != nil) ? " \(errorMessage!)" : "")\(underlyingError?.localizedDescription != nil ? "  \(underlyingError!.localizedDescription)" : "")"
+			case let .canceled(isPrefillAssisted):
+				"Authorization canceled\(isPrefillAssisted ? " with prefill assistance" : "")."
 		}
 	}
 }

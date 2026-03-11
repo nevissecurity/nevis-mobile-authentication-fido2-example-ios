@@ -23,11 +23,18 @@ extension HomeScreenViewModel {
 
 		// MARK: Properties
 
+		/// The unique identifier that determines which authorization flow this button triggers.
 		let id: Id
+		/// The localised string displayed on the button face.
 		let label: String
 
 		// MARK: Initializer
 
+		/// Creates a section button with the given identifier and label.
+		///
+		/// - Parameters:
+		///   - id: The button's unique identifier determining which authorization flow it triggers.
+		///   - label: The localised string displayed on the button.
 		init(_ id: Id, _ label: String) {
 			self.id = id
 			self.label = label

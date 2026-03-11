@@ -8,6 +8,8 @@
 ///
 /// Both fields are Base64URL-encoded binary data.
 struct EnrollmentData: Codable {
+	/// The Base64URL-encoded attestation object produced by the authenticator during registration.
 	let attestationObject: String
+	/// The Base64URL-encoded client data JSON signed by the authenticator.
 	let clientDataJSON: String
 }

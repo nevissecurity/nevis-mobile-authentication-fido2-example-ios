@@ -14,7 +14,9 @@ import SwiftUI
 struct LoadingView<Content>: View where Content: View {
 	// MARK: Properties
 
+	/// Whether the loading overlay is currently visible.
 	@Binding var isShowing: Bool
+	/// A view builder providing the content to display beneath the loading overlay.
 	var content: () -> Content
 
 	// MARK: Body

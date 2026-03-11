@@ -19,7 +19,7 @@ protocol Fido2Repository {
 	/// - Parameters:
 	///   - username: The username to enroll.
 	///   - fido2Options: FIDO2 policy overrides (user verification, attestation, etc.).
-	/// - Returns: A publisher that emits a ``StartAuthorizationResponse/credentialRegistration`` or fails with ``AppError``.
+	/// - Returns: A publisher that emits a ``StartAuthorizationResponse/credentialRegistration(username:statusToken:authorizationCreationOption:)`` or fails with ``AppError``.
 	func startRegistration(username: String, fido2Options: Fido2Options) -> AnyPublisher<StartAuthorizationResponse, AppError>
 
 	/// Submits the attestation object to the server to complete registration.
@@ -41,7 +41,7 @@ protocol Fido2Repository {
 	/// - Parameters:
 	///   - username: The username to authenticate, or `nil` for usernameless/discoverable flow.
 	///   - fido2Options: Optional FIDO2 policy overrides.
-	/// - Returns: A publisher that emits a ``StartAuthorizationResponse/credentialAssertion`` or fails with ``AppError``.
+	/// - Returns: A publisher that emits a ``StartAuthorizationResponse/credentialAssertion(statusToken:authorizationCreationOption:)`` or fails with ``AppError``.
 	func startApproval(username: String?, fido2Options: Fido2Options?) -> AnyPublisher<StartAuthorizationResponse, AppError>
 
 	/// Submits the assertion response to the server to complete authentication.

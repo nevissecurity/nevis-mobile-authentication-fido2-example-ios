@@ -30,6 +30,15 @@ enum AppError: Error {
 // MARK: - LocalizedError
 
 extension AppError: LocalizedError {
+	/// Builds a human-readable error description from the given components.
+	///
+	/// Priority: `message` → `underlying.localizedDescription` → composed fallback string.
+	///
+	/// - Parameters:
+	///   - text: A default prefix used in the fallback string (e.g. `"Network error"`).
+	///   - message: An optional explicit message that takes precedence over everything else.
+	///   - underlying: An optional wrapped error whose `localizedDescription` is used when no explicit message is provided.
+	/// - Returns: A non-nil human-readable string describing the error.
 	private func errorDescription(_ text: String, message: String? = nil, underlying: Error? = nil) -> String? {
 		if let message {
 			return message
@@ -40,22 +49,25 @@ extension AppError: LocalizedError {
 		return "\(text)\(message != nil ? "; \(message!)" : "")\(underlying != nil ? "; \(underlying!.localizedDescription)" : "")"
 	}
 
+	/// A human-readable description of the error, conforming to `LocalizedError`.
+	///
+	/// Delegates to the private `errorDescription(_:message:underlying:)` helper for each case.
 	var errorDescription: String? {
 		switch self {
-		case let .configuration(message, underlying):
-			errorDescription("Configuration error", message: message, underlying: underlying)
-		case let .network(message, underlying):
-			errorDescription("Network error", message: message, underlying: underlying)
-		case let .request(message, underlying):
-			errorDescription("Request error", message: message, underlying: underlying)
-		case let .missingData(message, underlying):
-			errorDescription("Missing data", message: message, underlying: underlying)
-		case let .invalidConversion(message, underlying):
-			errorDescription("Invalid conversion", message: message, underlying: underlying)
-		case let .notSupported(message, underlying):
-			errorDescription("Not supported", message: message, underlying: underlying)
-		case let .unknown(message, underlying):
-			errorDescription("Unknown error", message: message, underlying: underlying)
+			case let .configuration(message, underlying):
+				errorDescription("Configuration error", message: message, underlying: underlying)
+			case let .network(message, underlying):
+				errorDescription("Network error", message: message, underlying: underlying)
+			case let .request(message, underlying):
+				errorDescription("Request error", message: message, underlying: underlying)
+			case let .missingData(message, underlying):
+				errorDescription("Missing data", message: message, underlying: underlying)
+			case let .invalidConversion(message, underlying):
+				errorDescription("Invalid conversion", message: message, underlying: underlying)
+			case let .notSupported(message, underlying):
+				errorDescription("Not supported", message: message, underlying: underlying)
+			case let .unknown(message, underlying):
+				errorDescription("Unknown error", message: message, underlying: underlying)
 		}
 	}
 }
