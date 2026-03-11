@@ -12,17 +12,21 @@ import SwiftUI
 /// preference, and resident key pickers are also shown. Some pickers are disabled when
 /// the authenticator attachment is not set to `.crossPlatform` because those options only
 /// apply to roaming authenticators.
-///
-/// Note: the filename contains a known capitalisation typo (`FIdo2`) — do not rename.
-struct FIdo2OptionGroup: View {
+struct Fido2OptionGroup: View {
 	// MARK: Properties
 
+	/// When `true`, additional registration-specific pickers (authenticator attachment, attestation, resident key) are shown.
 	let isRegistration: Bool
 
+	/// Whether the FIDO2 options `DisclosureGroup` is currently expanded.
 	@Binding var isExpanded: Bool
+	/// The currently selected user verification requirement.
 	@Binding var userVerificationRequirement: Fido2RequirementViewOption
+	/// The currently selected authenticator attachment constraint.
 	@Binding var authenticatorAttachment: Fido2AuthenticatorAttachmentViewOption
+	/// The currently selected attestation conveyance preference.
 	@Binding var attestationConveyancePreference: Fido2AttestationConveyancePreferenceViewOption
+	/// The currently selected resident key requirement.
 	@Binding var residentKeyRequirement: Fido2RequirementViewOption
 
 	// MARK: View
@@ -52,6 +56,13 @@ struct FIdo2OptionGroup: View {
 		.fido2OptionGroup()
 	}
 
+	/// Creates a labelled `Picker` for a `CaseIterable` option type with optional disabling.
+	///
+	/// - Parameters:
+	///   - title: The label shown above the segmented picker.
+	///   - selection: Binding to the currently selected option.
+	///   - isDisabled: When `true`, the picker is rendered but non-interactive.
+	/// - Returns: A `VStack` containing the title label and a segmented `Picker`.
 	func optionPicker<T: Hashable & CaseIterable & RawRepresentable>(title: String, selection: Binding<T>, isDisabled: Bool = false) -> some View where T.RawValue == String {
 		VStack(alignment: .leading) {
 			Text(title)
@@ -79,7 +90,7 @@ struct FIdo2OptionGroup: View {
 	@Previewable @State var authenticatorAttachment: Fido2AuthenticatorAttachmentViewOption = .unspecified
 	@Previewable @State var attestationConveyancePreference: Fido2AttestationConveyancePreferenceViewOption = .unspecified
 	@Previewable @State var residentKeyRequirement: Fido2RequirementViewOption = .unspecified
-	FIdo2OptionGroup(
+	Fido2OptionGroup(
 		isRegistration: true,
 		isExpanded: $isExpanded,
 		userVerificationRequirement: $userVerificationRequirement,
@@ -96,7 +107,7 @@ struct FIdo2OptionGroup: View {
 	@Previewable @State var authenticatorAttachment: Fido2AuthenticatorAttachmentViewOption = .unspecified
 	@Previewable @State var attestationConveyancePreference: Fido2AttestationConveyancePreferenceViewOption = .unspecified
 	@Previewable @State var residentKeyRequirement: Fido2RequirementViewOption = .unspecified
-	FIdo2OptionGroup(
+	Fido2OptionGroup(
 		isRegistration: false,
 		isExpanded: $isExpanded,
 		userVerificationRequirement: $userVerificationRequirement,

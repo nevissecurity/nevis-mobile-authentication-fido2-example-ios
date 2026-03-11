@@ -8,7 +8,9 @@
 ///
 /// Provides a unified way to detect API-level errors before mapping to domain types.
 protocol ServerResponse: Decodable {
+	/// The server-returned error message, or `nil` if the response indicates success.
 	var errorMessage: String? { get }
+	/// An optional status string from the server response body.
 	var status: String? { get }
 }
 

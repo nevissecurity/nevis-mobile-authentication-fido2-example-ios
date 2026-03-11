@@ -21,8 +21,11 @@ extension HomeScreenViewModel {
 
 		// MARK: Properties
 
+		/// The unique identifier that distinguishes this section.
 		let id: Id
+		/// The localised heading displayed above the section's buttons.
 		let title: String
+		/// The action buttons shown inside the section.
 		let buttons: [SectionButton]
 	}
 }

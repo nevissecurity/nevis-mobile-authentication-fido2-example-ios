@@ -35,6 +35,9 @@ extension AppConfiguration {
 // MARK: - Preview
 
 extension AppConfiguration {
+	/// A placeholder instance used for SwiftUI previews.
+	///
+	/// Uses stub values so preview rendering does not depend on a real `Configuration.plist`.
 	static var preview: AppConfiguration {
 		AppConfiguration(
 			host: "test.com",

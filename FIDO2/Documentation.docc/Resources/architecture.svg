@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" width="640" height="420" font-family="SF Pro Text, Helvetica Neue, Arial, sans-serif">
+
+  <!-- Background -->
+  <rect width="640" height="420" rx="16" fill="#F2F2F7"/>
+
+  <!-- Title -->
+  <text x="320" y="36" text-anchor="middle" font-size="17" font-weight="700" fill="#1C1C1E">FIDO2 Example – Clean Architecture</text>
+
+  <!-- Layer boxes -->
+
+  <!-- Presentation -->
+  <rect x="40" y="60" width="560" height="72" rx="10" fill="#0A84FF" opacity="0.15"/>
+  <rect x="40" y="60" width="6" height="72" rx="3" fill="#0A84FF"/>
+  <text x="68" y="90" font-size="14" font-weight="600" fill="#0A84FF">Presentation</text>
+  <text x="68" y="110" font-size="12" fill="#3A3A3C">SwiftUI Views  ·  HomeScreenViewModel (ObservableObject + Combine)</text>
+  <text x="68" y="126" font-size="11" fill="#636366">Fido2OptionGroup  ·  Fido2Section  ·  LoadingView  ·  MessageView</text>
+
+  <!-- Arrow 1 -->
+  <line x1="320" y1="132" x2="320" y2="154" stroke="#8E8E93" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="315,152 325,152 320,162" fill="#8E8E93"/>
+
+  <!-- Domain -->
+  <rect x="40" y="162" width="560" height="72" rx="10" fill="#30D158" opacity="0.15"/>
+  <rect x="40" y="162" width="6" height="72" rx="3" fill="#30D158"/>
+  <text x="68" y="192" font-size="14" font-weight="600" fill="#248A3D">Domain</text>
+  <text x="68" y="212" font-size="12" fill="#3A3A3C">Use Cases  ·  Fido2Repository (protocol)  ·  AuthorizationService</text>
+  <text x="68" y="228" font-size="11" fill="#636366">StartAuthorizationUseCase  ·  CompleteAuthorizationUseCase  ·  IntrospectUseCase</text>
+
+  <!-- Arrow 2 -->
+  <line x1="320" y1="234" x2="320" y2="256" stroke="#8E8E93" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="315,254 325,254 320,264" fill="#8E8E93"/>
+
+  <!-- Data -->
+  <rect x="40" y="264" width="560" height="72" rx="10" fill="#FF9F0A" opacity="0.15"/>
+  <rect x="40" y="264" width="6" height="72" rx="3" fill="#FF9F0A"/>
+  <text x="68" y="294" font-size="14" font-weight="600" fill="#B25000">Data</text>
+  <text x="68" y="314" font-size="12" fill="#3A3A3C">Fido2RepositoryImpl  ·  AuthenticationCloudDataSourceImpl (Moya)</text>
+  <text x="68" y="330" font-size="11" fill="#636366">DTO Models  ·  JSON serialization  ·  Domain entity mapping</text>
+
+  <!-- Arrow 3 -->
+  <line x1="320" y1="336" x2="320" y2="358" stroke="#8E8E93" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="315,356 325,356 320,366" fill="#8E8E93"/>
+
+  <!-- Common -->
+  <rect x="40" y="364" width="560" height="40" rx="10" fill="#FF375F" opacity="0.12"/>
+  <rect x="40" y="364" width="6" height="40" rx="3" fill="#FF375F"/>
+  <text x="68" y="382" font-size="14" font-weight="600" fill="#C0143C">Common</text>
+  <text x="148" y="382" font-size="12" fill="#3A3A3C">  ConfigurationLoader  ·  AppError  ·  Extensions  ·  DependencyContainer (Swinject)</text>
+
+  <!-- Footer -->
+  <text x="320" y="415" text-anchor="middle" font-size="10" fill="#8E8E93">© 2026 Nevis Security AG</text>
+</svg>
+

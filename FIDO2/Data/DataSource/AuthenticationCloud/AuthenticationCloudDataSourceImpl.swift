@@ -11,8 +11,12 @@ import Moya
 /// Concrete implementation of ``AuthenticationCloudDataSource`` backed by a
 /// `MoyaProvider<AuthenticationCloud>`.
 final class AuthenticationCloudDataSourceImpl {
+	/// The Moya provider used to send all Authentication Cloud requests.
 	private let provider: MoyaProvider<AuthenticationCloud>
 
+	/// Creates an instance backed by the given Moya provider.
+	///
+	/// - Parameter provider: A configured `MoyaProvider<AuthenticationCloud>` used to send requests.
 	init(provider: MoyaProvider<AuthenticationCloud>) {
 		self.provider = provider
 	}
@@ -21,30 +25,58 @@ final class AuthenticationCloudDataSourceImpl {
 // MARK: - AuthenticationCloudDataSource
 
 extension AuthenticationCloudDataSourceImpl: AuthenticationCloudDataSource {
+	/// The HTTP `User-Agent` header value forwarded from the underlying Moya provider.
 	var userAgent: String {
 		provider.userAgent
 	}
 
+	/// Initiates passkey registration by forwarding the request to the ``AuthenticationCloud/registration(request:)`` endpoint.
+	///
+	/// - Parameter request: The registration request DTO.
+	/// - Returns: A publisher that emits a ``RegistrationResponse`` or fails with `MoyaError`.
 	func registration(request: RegistrationRequest) -> AnyPublisher<RegistrationResponse, MoyaError> {
 		execute(target: .registration(request: request))
 	}
 
+	/// Completes passkey registration by forwarding the request to the ``AuthenticationCloud/attestation(request:)`` endpoint.
+	///
+	/// - Parameter request: The attestation request DTO.
+	/// - Returns: A publisher that emits an ``AttestationResponse`` or fails with `MoyaError`.
 	func attestation(request: AttestationRequest) -> AnyPublisher<AttestationResponse, MoyaError> {
 		execute(target: .attestation(request: request))
 	}
 
+	/// Initiates passkey authentication by forwarding the request to the ``AuthenticationCloud/approval(request:)`` endpoint.
+	///
+	/// - Parameter request: The approval request DTO.
+	/// - Returns: A publisher that emits an ``ApprovalResponse`` or fails with `MoyaError`.
 	func approval(request: ApprovalRequest) -> AnyPublisher<ApprovalResponse, MoyaError> {
 		execute(target: .approval(request: request))
 	}
 
+	/// Completes passkey authentication by forwarding the request to the ``AuthenticationCloud/assertion(request:)`` endpoint.
+	///
+	/// - Parameter request: The assertion request DTO.
+	/// - Returns: A publisher that emits an ``AssertionResponse`` or fails with `MoyaError`.
 	func assertion(request: AssertionRequest) -> AnyPublisher<AssertionResponse, MoyaError> {
 		execute(target: .assertion(request: request))
 	}
 
+	/// Introspects a JWT token by forwarding the request to the ``AuthenticationCloud/introspect(request:)`` endpoint.
+	///
+	/// - Parameter request: The introspect request DTO.
+	/// - Returns: A publisher that emits an ``IntrospectResponse`` or fails with `MoyaError`.
 	func introspect(request: IntrospectRequest) -> AnyPublisher<IntrospectResponse, MoyaError> {
 		execute(target: .introspect(request: request))
 	}
 
+	/// Extracts a human-readable error message from a `MoyaError`.
+	///
+	/// Attempts to decode the response body as ``ErrorResponse``; falls back to the status code
+	/// and URL string, or to `localizedDescription` for non-status-code errors.
+	///
+	/// - Parameter moyaError: The Moya error to inspect.
+	/// - Returns: A descriptive string, or `nil` if no message can be extracted.
 	func errorMessage(from moyaError: Moya.MoyaError) -> String? {
 		guard case let .statusCode(response) = moyaError else {
 			return moyaError.localizedDescription

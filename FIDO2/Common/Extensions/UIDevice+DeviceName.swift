@@ -9,6 +9,9 @@ import UIKit
 // MARK: - Determining the human readable name of the device.
 
 extension UIDevice {
+	/// The raw hardware model identifier string, e.g. `"iPhone15,2"`.
+	///
+	/// Reads the `machine` field from `uname(2)` syscall output.
 	private static var modelIdentifier: String {
 		var systemInfo = utsname()
 		uname(&systemInfo)
@@ -19,14 +22,16 @@ extension UIDevice {
 		}
 	}
 
+	/// A human-readable model name, resolving simulator identifiers via the
+	/// `SIMULATOR_MODEL_IDENTIFIER` environment variable when running in the iOS Simulator.
 	private static var modelName: String {
 		let identifier = modelIdentifier
 
 		return switch identifier {
-		case "i386", "x86_64", "arm64":
-			"Simulator (\(ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] ?? identifier))"
-		default:
-			identifier
+			case "i386", "x86_64", "arm64":
+				"Simulator (\(ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] ?? identifier))"
+			default:
+				identifier
 		}
 	}
 

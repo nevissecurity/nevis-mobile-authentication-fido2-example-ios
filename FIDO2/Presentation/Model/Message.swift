@@ -14,7 +14,10 @@ struct Message {
 		case error
 	}
 
+	/// The visual style of the message banner (success = green, error = red).
 	var type: MessageType = .success
+	/// The primary message text shown in bold.
 	let title: String
+	/// Optional secondary text providing further detail below the title.
 	var details: String?
 }

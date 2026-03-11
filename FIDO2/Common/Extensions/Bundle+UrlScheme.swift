@@ -7,7 +7,7 @@
 import Foundation
 
 extension Bundle {
-	/// Returns the URL schemes defined in the Info.plist.
+	/// Retrieves the first URL scheme defined in the Info.plist, if any, nil otherwise.
 	var urlSchemes: [String] {
 		guard
 			let types = infoDictionary?["CFBundleURLTypes"] as? [[String: Any]],

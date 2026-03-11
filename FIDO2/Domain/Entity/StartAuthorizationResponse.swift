@@ -32,10 +32,10 @@ extension StartAuthorizationResponse {
 	/// The username associated with a registration response, or `nil` for other response types.
 	var userName: String? {
 		switch self {
-		case let .credentialRegistration(username, _, _):
-			username
-		default:
-			nil
+			case let .credentialRegistration(username, _, _):
+				username
+			default:
+				nil
 		}
 	}
 
@@ -44,12 +44,12 @@ extension StartAuthorizationResponse {
 	/// Accessing this on a `.webAuthorization` response is a programming error and triggers a `fatalError`.
 	var statusToken: String {
 		switch self {
-		case let .credentialRegistration(_, statusToken, _):
-			statusToken
-		case let .credentialAssertion(statusToken, _):
-			statusToken
-		default:
-			fatalError("Invalid state")
+			case let .credentialRegistration(_, statusToken, _):
+				statusToken
+			case let .credentialAssertion(statusToken, _):
+				statusToken
+			default:
+				fatalError("Invalid state")
 		}
 	}
 }

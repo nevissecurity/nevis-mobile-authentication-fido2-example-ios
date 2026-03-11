@@ -8,15 +8,17 @@
 ///
 /// Note: the filename contains a known typo (`IntroscpectRequest`) — do not rename.
 struct IntrospectRequest: Encodable {
+	/// The JWT string to introspect.
 	let token: String
 }
 
 // MARK: - IntrospectRequest + DictionaryConvertible
 
 extension IntrospectRequest {
+	/// Returns the request fields as a string dictionary, suitable for form-encoded requests.
 	var asDictionary: [String: String] {
 		[
-			"token": token,
+			"token": token
 		]
 	}
 }
