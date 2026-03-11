@@ -18,6 +18,7 @@ public extension Data {
 	/// calling the standard `Data(base64Encoded:)` initializer.
 	///
 	/// - Parameter base64URLEncoded: A Base64URL-encoded string, with or without padding.
+	/// - Returns: A `Data` instance if the input string is valid Base64URL, or `nil` if it is not.
 	init?(base64URLEncoded: String) {
 		var appendCount = 4 - (base64URLEncoded.count % 4)
 		var base64String: String = base64URLEncoded
@@ -41,6 +42,7 @@ public extension Data {
 	///
 	/// Converts standard Base64 output to Base64URL format by replacing `+` with `-`,
 	/// `/` with `_`, and stripping the `=` padding.
+	/// - Returns: A Base64URL-encoded string representation of the data.
 	func toBase64UrlEncodedString() -> String {
 		base64EncodedString()
 			.replacingOccurrences(of: "+", with: "-")

@@ -13,6 +13,7 @@ import SwiftUI
 struct MessageView: View {
 	// MARK: Properties
 
+	/// The message to display, or `nil` to render an `EmptyView`.
 	let message: Message?
 
 	// MARK: View

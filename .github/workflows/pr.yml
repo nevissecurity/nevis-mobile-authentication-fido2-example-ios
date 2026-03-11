@@ -43,6 +43,9 @@ jobs:
       - name: Lint Ruby
         uses: ./.github/actions/lint-ruby
 
+      - name: Lint Swift
+        uses: ./.github/actions/lint-swift
+
       - name: Run Fastlane
         uses: maierj/fastlane-action@v3.1.0
         with:

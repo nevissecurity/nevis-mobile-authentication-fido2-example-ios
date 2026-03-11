@@ -15,10 +15,14 @@ import SwiftUI
 struct UsernameTextField: View {
 	// MARK: Properties
 
+	/// The placeholder text shown when the field is empty.
 	let placeholder: String = "Enter Username"
 
+	/// A binding to the entered username string.
 	@Binding var text: String
+	/// When `true`, enables passkey auto-fill via `.textContentType(.username)` and shows a key icon overlay.
 	var isAutoFillAssisted: Bool = false
+	/// Binding to the app-wide focus state, used to assign focus to this field.
 	var focusedField: FocusState<FocusedField?>.Binding
 
 	// MARK: View
