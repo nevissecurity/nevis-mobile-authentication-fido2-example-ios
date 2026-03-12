@@ -1,22 +1,44 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
 import SwinjectAutoregistration
 
+/// The main (and only) screen of the app.
+///
+/// Displays:
+/// - A title label
+/// - A ``Fido2Section`` for each authorization type (registration, authentication,
+///   usernameless authentication, web authorization)
+/// - A ``Fido2OptionGroup`` inside the registration and authentication sections
+///   for configuring FIDO2 policy options
+/// - A ``LoadingView`` overlay while operations are in progress
+/// - The configured host and web-authorization path at the bottom
 struct HomeScreenView: View {
 	// MARK: Properties
 
+	/// The view model that drives the screen's state and authorization lifecycle.
 	@StateObject var viewModel: HomeScreenViewModel
+	/// Tracks which text field (if any) currently holds keyboard focus.
 	@FocusState var focusedField: FocusedField?
+	/// The identifier of the currently expanded section, or `nil` for all collapsed.
 	@State var expandedSectionId: Int?
+	/// Whether the FIDO2 options `DisclosureGroup` inside a section is expanded.
 	@State var isFido2OptionGroupExpanded: Bool
 
 	// MARK: Initializer
 
+	/// Creates a `HomeScreenView` with an optional pre-built view model and initial state.
+	///
+	/// Intended for both normal use (resolved via `dependencyContainer`) and SwiftUI preview injection.
+	///
+	/// - Parameters:
+	///   - viewModel: The view model to drive this view. Defaults to the container-resolved instance.
+	///   - expandedSectionId: The section that should be expanded on first appearance, or `nil` for all collapsed.
+	///   - isFido2OptionGroupExpanded: Whether the FIDO2 option group should be expanded on first appearance.
 	init(
 		viewModel: HomeScreenViewModel = dependencyContainer ~> HomeScreenViewModel.self,
 		expandedSectionId: Int? = nil,
@@ -54,7 +76,7 @@ struct HomeScreenView: View {
 												focusedField: $focusedField,
 											)
 											.padding(.bottom, 10)
-											FIdo2OptionGroup(
+											Fido2OptionGroup(
 												isRegistration: section.id == .registration,
 												isExpanded: $isFido2OptionGroupExpanded,
 												userVerificationRequirement: $viewModel.userVerificationRequirement,
@@ -91,6 +113,9 @@ struct HomeScreenView: View {
 
 	// MARK: Configuration
 
+	/// Renders the host and web-authorization path as a footnote box at the bottom of the screen.
+	///
+	/// Returns an `EmptyView` when the configuration has not yet been loaded.
 	var appConfiguration: some View {
 		guard let configuration = viewModel.appConfiguration else {
 			return AnyView(EmptyView())
@@ -109,7 +134,7 @@ struct HomeScreenView: View {
 // MARK: - Preview
 
 #Preview() {
-	var viewModel: HomeScreenViewModel = .preview
+	let viewModel: HomeScreenViewModel = .preview
 	viewModel.username = "User"
 	viewModel.isAutoFillAssistedReady = true
 	return HomeScreenView(
@@ -120,7 +145,7 @@ struct HomeScreenView: View {
 }
 
 #Preview("Authentication") {
-	var viewModel: HomeScreenViewModel = .preview
+	let viewModel: HomeScreenViewModel = .preview
 	viewModel.username = "User"
 	viewModel.isAutoFillAssistedReady = true
 	return HomeScreenView(
@@ -138,7 +163,7 @@ struct HomeScreenView: View {
 }
 
 #Preview("Error message") {
-	var viewModel: HomeScreenViewModel = .preview
+	let viewModel: HomeScreenViewModel = .preview
 	viewModel.message = Message(type: .error, title: "Error", details: "An error occurred")
 	return HomeScreenView(
 		viewModel: viewModel,
@@ -147,7 +172,7 @@ struct HomeScreenView: View {
 }
 
 #Preview("Success message") {
-	var viewModel: HomeScreenViewModel = .preview
+	let viewModel: HomeScreenViewModel = .preview
 	viewModel.message = Message(type: .success, title: "Success", details: "Your authorization token is the following: TOKEN :)")
 	return HomeScreenView(
 		viewModel: viewModel,

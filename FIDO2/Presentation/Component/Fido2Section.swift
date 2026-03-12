@@ -1,22 +1,36 @@
 //
 // FIDO2 Example
 //
-// Copyright © 2025 Nevis Security AG. All rights reserved.
+// Copyright © 2026 Nevis Security AG. All rights reserved.
 //
 
 import SwiftUI
 
+/// A collapsible `DisclosureGroup` section on the home screen.
+///
+/// Contains a divider, optional content (username field, option group), action buttons,
+/// and a ``MessageView`` for displaying the operation result.
+///
+/// Only one section is expanded at a time, controlled by `expandedSectionId`.
 struct Fido2Section<Content>: View, Identifiable where Content: View {
 	// MARK: Properties
 
+	/// The unique identifier used for `Identifiable` conformance and section expansion tracking.
 	let id: Int
+	/// The localised heading displayed in the `DisclosureGroup` label.
 	let title: String
+	/// The label/action pairs rendered as primary buttons inside the section.
 	let buttons: [(String, () -> ())]
+	/// When `true`, all section buttons are rendered but non-interactive.
 	var isButtonDisabled: Bool = false
+	/// A binding to the app-wide expanded section identifier; controls which section is open.
 	@Binding var expandedSectionId: Int?
+	/// A view builder providing any additional content shown above the action buttons.
 	var content: () -> (Content)
+	/// The operation result message displayed below the action buttons, or `nil` when cleared.
 	var message: Message?
 
+	/// A binding to the app-wide focused text field, used to manage keyboard focus.
 	var focusedField: FocusState<FocusedField?>.Binding
 
 	// MARK: View
