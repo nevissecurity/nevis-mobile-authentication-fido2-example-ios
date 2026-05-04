@@ -1,0 +1,17 @@
+source "https://rubygems.org"
+
+gem "fastlane", "~> 2.227"
+
+# These gems were loaded from the standard library by Fastlane,
+# but will no longer be part of the default gems since Ruby 3.4.0.
+# Includes them directly until Fastlane fixes it.
+gem "abbrev"
+gem "csv"
+gem "ostruct"
+
+group :development do
+	gem "rubocop", "~> 1.82.1", require: false
+end
+
+plugins_path = File.join(File.dirname(__FILE__), "fastlane", "Pluginfile")
+eval_gemfile(plugins_path) if File.exist?(plugins_path)

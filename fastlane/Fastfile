@@ -1,0 +1,283 @@
+require "securerandom"
+
+default_platform(:ios)
+
+app_xcodeproj = "FIDO2 Example.xcodeproj"
+target_name = "FIDO2 Example"
+app_identifier = "ch.nevis.mobile.authentication.fido2.example"
+match_type = "adhoc"
+output_dir = File.expand_path("output/")
+display_name = "Nevis FIDO2 Example iOS"
+
+keychain_password = SecureRandom.base64
+ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
+
+def ensure_temp_keychain(name, password)
+	delete_temp_keychain(name)
+	create_temp_keychain(name, password)
+end
+
+def create_temp_keychain(name, password)
+	create_keychain(
+		name:,
+		password:,
+		unlock: true,
+		timeout: 0,
+		lock_when_sleeps: true
+	)
+end
+
+def delete_temp_keychain(name)
+	delete_keychain(name:) if File.exist? File.expand_path("~/Library/Keychains/#{name}-db")
+end
+
+def report_on_success(message)
+	slack(
+		message: "#{message}\nCheck build logs: #{ENV['CURRENT_BUILD_URL']}",
+		slack_url: ENV["SLACK_WEBHOOK_URL"]
+	) if ENV["SLACK_WEBHOOK_URL"]
+end
+
+def report_on_error(message, exception)
+	slack(
+		message: "#{message}\nCheck build logs: #{ENV['CURRENT_BUILD_URL']}",
+		slack_url: ENV["SLACK_WEBHOOK_URL"],
+		success: false,
+		attachment_properties: {
+			fields: [
+				{
+					title: "Error message",
+					value: exception.to_s,
+					short: false
+				}
+			]
+		}
+	) if ENV["SLACK_WEBHOOK_URL"]
+	UI.user_error!(exception.to_s)
+end
+
+desc "Build and distribute the application"
+desc "#### Options"
+desc " * **`version`**: The version of the application."
+desc " * **`build_number`**: The build number of the application."
+desc " * **`host_name`**: The host name of the backend to connect to."
+desc " * **`backend_access_token`**: The token used to access the backend."
+desc ""
+lane :main do |options|
+	update_configuration(options)
+	distribute(options)
+rescue => e
+	delete_temp_keychain(ENV["TEMP_KEYCHAIN_NAME"])
+	report_on_error("#{display_name} build failed ❌", e)
+end
+
+desc "Build the application"
+lane :pr do
+	gym(
+		project: app_xcodeproj,
+		scheme: target_name,
+		configuration: "Release",
+		clean: true,
+		skip_codesigning: true,
+		skip_profile_detection: true,
+		skip_archive: true,
+		skip_package_ipa: true
+	)
+end
+
+desc "Distribute the application"
+desc "#### Options"
+desc " * **`version`**: The version of the application."
+desc " * **`build_number`**: The build number of the application."
+desc ""
+private_lane :distribute do |options|
+	keychain_name = ENV["TEMP_KEYCHAIN_NAME"]
+	ensure_temp_keychain(
+		keychain_name,
+		keychain_password
+	)
+
+	build_number = options[:build_number] || get_build_number
+	version = get_version_number
+
+	UI.message("Distributing #{display_name} #{version} (#{build_number}) 📦")
+
+	increment_build_number(build_number:)
+
+	upload(destination: Destination::FIREBASE)
+	upload(destination: Destination::TESTFLIGHT)
+
+	delete_temp_keychain(keychain_name)
+	report_on_success("#{display_name} build is completed: #{version} (#{build_number}) ✅")
+end
+
+desc "Upload the application to the specified destination"
+desc "#### Options"
+desc " * **`destination`**: The destination to upload the application to."
+desc ""
+private_lane :upload do |options|
+	destination = options[:destination]
+	keychain_name = ENV["TEMP_KEYCHAIN_NAME"]
+
+	begin
+		# Setup code signing
+		match(
+			type: getConfig(destination:, step: Step::MATCH),
+			readonly: true,
+			app_identifier:,
+			git_url: ENV["MATCH_GIT_URL"],
+			git_branch: "main",
+			keychain_name:,
+			keychain_password:
+		)
+
+		update_code_signing_settings(
+			path: app_xcodeproj,
+			build_configurations: ["Release"],
+			use_automatic_signing: false,
+			team_id: ENV["DEVELOPER_PORTAL_TEAM_ID"],
+			code_sign_identity: ENV["CODE_SIGNING_IDENTITY"],
+			profile_name: ENV["sigh_#{app_identifier}_#{match_type}_profile-name"]
+		)
+
+		# Build
+		gym(
+			project: app_xcodeproj,
+			scheme: target_name,
+			configuration: "Release",
+			clean: true,
+			skip_profile_detection: true,
+			export_method: getConfig(destination:, step: Step::GYM),
+			export_options: {
+				provisioningProfiles: {
+					app_identifier => "match #{getConfig(destination:, step: Step::PROVISIONING_PROFILE)} #{app_identifier}"
+				}
+			},
+			output_directory: "#{output_dir}/builds",
+			xcargs: "OTHER_CODE_SIGN_FLAGS=\"--keychain=#{keychain_name}\""
+		)
+
+		# Distribute
+		case destination
+		when Destination::FIREBASE
+			# Upload to Firebase
+			firebase_app_distribution(
+				app: ENV["FIREBASE_APP_ID"],
+				ipa_path: "#{output_dir}/builds/#{target_name}.ipa",
+				groups: "developers, internal-testers, presales"
+			)
+		when Destination::TESTFLIGHT
+			# Upload to TestFlight
+			testflight_app_distribution
+		else
+			UI.user_error!("⚠️ provided destination: #{destination} is not supported")
+		end
+	end
+end
+
+desc "Upload the application to TestFlight"
+desc ""
+private_lane :testflight_app_distribution do
+	# Get AppStoreConnect Credentials
+	app_store_connect_api_key(
+		key_id: ENV["CONNECT_API_KEY_ID"],
+		issuer_id: ENV["CONNECT_API_ISSUER_ID"],
+		key_content: ENV["CONNECT_API_KEY_CONTENT"],
+		in_house: false
+	)
+
+	# Gather App Review Information
+	beta_app_review_info = {}
+
+	begin
+		beta_app_review_info = JSON.parse(ENV["BETA_APP_REVIEW_INFO"])
+	rescue JSON::ParserError => e
+		puts "Could not parse 'BETA_APP_REVIEW_INFO', not setting beta_app_review_info for TestFlight. Error: #{e}"
+		raise e
+	end
+
+	# Upload App to TestFlight
+	upload_to_testflight(
+		beta_app_review_info:,
+		beta_app_description: "https://github.com/nevissecurity/nevis-mobile-authentication-poc-ios-fido2",
+		groups: ["Nevis Testers"],
+		changelog: "https://docs.nevis.net/mobilesdk/quickstart",
+		distribute_external: true
+	)
+end
+
+desc "Update the host name, access token and the associated domains."
+desc "#### Options"
+desc " * **`host_name`**: The host name of the backend to connect to."
+desc " * **`backend_access_token`**: The token used to access the backend."
+desc ""
+private_lane :update_configuration do |options|
+	host_name = options[:host_name] || ENV["HOST_NAME"]
+	UI.user_error!("⚠️ host_name is not provided") unless host_name
+	backend_access_token = options[:backend_access_token] || ENV["BACKEND_ACCESS_TOKEN"]
+	UI.user_error!("⚠️ backend_access_token is not provided") unless backend_access_token
+
+	update_plist(
+		plist_path: "FIDO2/Resource/Configuration.plist",
+		block: proc do |plist|
+			plist["host"] = host_name
+			plist["accessToken"] = backend_access_token
+		end
+	)
+
+	update_plist(
+		plist_path: "FIDO2/Resource/FIDO2-Example.entitlements",
+		block: proc do |plist|
+			key = "com.apple.developer.associated-domains"
+			plist[key] ||= []
+			domain = "webcredentials:#{host_name}"
+			plist[key] << domain unless plist[key].include?(domain)
+		end
+	)
+end
+
+####
+#### Utilities
+####
+
+module Step
+	MATCH = "match".freeze
+	CODE_SIGN = "code_sign".freeze
+	GYM = "gym".freeze
+	PROVISIONING_PROFILE = "prov_profile".freeze
+end
+
+module Destination
+	FIREBASE = "firebase".freeze
+	TESTFLIGHT = "testflight".freeze
+end
+
+desc "Get configuration value"
+desc "#### Options"
+desc " * **`destination`**: The destination to upload the application to. Possible values, see Destination module."
+desc " * **`step`**: The step to get the configuration value for. Possible values, see Step module."
+desc ""
+private_lane :getConfig do |options|
+	UI.user_error!("⚠️ destination is not provided") unless options[:destination]
+	UI.user_error!("⚠️ step is not provided") unless options[:step]
+	destination = options[:destination]
+	step = options[:step]
+
+	case [step, destination]
+	when [Step::MATCH, Destination::FIREBASE], [Step::CODE_SIGN, Destination::FIREBASE]
+		config = "adhoc"
+	when [Step::MATCH, Destination::TESTFLIGHT], [Step::CODE_SIGN, Destination::TESTFLIGHT]
+		config = "appstore"
+	when [Step::GYM, Destination::FIREBASE]
+		config = "ad-hoc"
+	when [Step::GYM, Destination::TESTFLIGHT]
+		config = "app-store"
+	when [Step::PROVISIONING_PROFILE, Destination::FIREBASE]
+		config = "AdHoc"
+	when [Step::PROVISIONING_PROFILE, Destination::TESTFLIGHT]
+		config = "AppStore"
+	else
+		UI.user_error!("⚠️ Could not get configuration value for: Step - #{step}, Destination - #{destination}")
+	end
+	config
+end

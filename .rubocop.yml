@@ -1,0 +1,71 @@
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.4
+
+# Layout Cops
+
+Layout/IndentationStyle:
+  Description: 'Uses tabs per indentation level.'
+  StyleGuide: 'https://rubystyle.guide/#spaces-indentation'
+  EnforcedStyle: tabs
+
+Layout/IndentationWidth:
+  Description: 'Uses indentation width 1.'
+  StyleGuide: 'https://rubystyle.guide/#spaces-indentation'
+  Width: 1
+
+Layout/FirstArgumentIndentation:
+  Description: 'Checks the indentation of the first argument in a method call.'
+  EnforcedStyle: consistent_relative_to_receiver
+
+Layout/FirstHashElementIndentation:
+  Description: 'Checks the indentation of the first key in a hash literal.'
+  EnforcedStyle: consistent
+
+Layout/FirstArrayElementIndentation:
+  Description: 'Checks the indentation of the first element in an array literal.'
+  EnforcedStyle: consistent
+
+Layout/LineLength:
+  Description: 'Limits lines to 120 characters.'
+  StyleGuide: 'https://rubystyle.guide/#max-line-length'
+  Max: 120
+
+# Style Cops
+
+Style/StringLiterals:
+  Description: 'Checks if uses of quotes match the configured preference.'
+  StyleGuide: 'https://rubystyle.guide/#consistent-string-literals'
+  EnforcedStyle: double_quotes
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/FetchEnvVar:
+  Description: 'Suggests ENV.fetch for the replacement of ENV[].'
+  StyleGuide: 'https://rubystyle.guide/#hash-fetch-defaults'
+  Enabled: false
+
+Style/MultilineIfModifier:
+  Description: 'Checks for uses of if/unless modifiers with multiple-lines bodies.'
+  StyleGuide: 'https://rubystyle.guide/#no-multiline-if-modifiers'
+  Enabled: false
+
+Style/RescueStandardError:
+  Description: 'Checks for rescuing StandardError.'
+  EnforcedStyle: implicit
+
+# Metrics Cops
+
+Metrics/AbcSize:
+  Description: 'Checks that the ABC size of methods is not higher than the configured maximum.'
+  Max: 30
+
+Metrics/BlockLength:
+  Description: 'Checks if the length of a block exceeds some maximum value.'
+  Max: 50
+
+Metrics/MethodLength:
+  Description: 'Checks if the length of a method exceeds some maximum value.'
+  StyleGuide: 'https://rubystyle.guide/#short-methods'
+  Max: 15

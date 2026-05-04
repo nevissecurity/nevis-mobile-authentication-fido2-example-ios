@@ -1,0 +1,16 @@
+name: Lint Swift
+description: Lints Swift code running 'swift-format'
+
+inputs:
+  working-directory:
+    description: 'The working directory to run the linter in'
+    required: false
+    default: '.'
+
+runs:
+  using: composite
+  steps:
+      - name: Run Swift Linter
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+        run: xcrun --run swift-format lint --configuration .swift-format --recursive FIDO2
