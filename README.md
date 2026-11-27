@@ -1,7 +1,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://www.nevis.net/hubfs/Nevis%202023%20theme/Icons/negativ.svg">
   <source media="(prefers-color-scheme: light)" srcset="https://www.nevis.net/hubfs/Nevis%202023%20theme/Icons/positiv.svg">
-  <img alt="Fallback image description" src="https://www.nevis.net/hubfs/Nevis/images/logotype.svg">
+  <img alt="Nevis logo" src="https://www.nevis.net/hubfs/Nevis/images/logotype.svg">
 </picture>
 
 # Nevis Mobile Authentication FIDO2 Example App
@@ -157,6 +157,10 @@ Common (Configuration, Error handling, Extensions, DI)
 | "No credentials available" during authentication | Register first using the same Apple ID on the same or a linked device |
 | Associated domain / WebAuthn RP ID mismatch | Update the `webcredentials` entitlement in `FIDO2-Example.entitlements` with your correct hostname |
 | Build or passkey APIs fail on Simulator | [Passkey APIs require a physical device](https://developer.apple.com/documentation/authenticationservices/public-private_key_authentication/supporting_passkeys) — use a real device |
+
+## AI Assistant Support
+
+This repository contains an [AGENTS.md](AGENTS.md) file with project context for AI coding assistants (e.g. Claude Code, Cursor, GitHub Copilot). `CLAUDE.md`, `.cursorrules` and `.github/copilot-instructions.md` are symlinks to it. It helps the assistant answer questions about configuring, running and adapting the example app, and about moving its passkey integration code into your own application.
 
 ---
 
