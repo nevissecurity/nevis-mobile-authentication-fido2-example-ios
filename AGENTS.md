@@ -57,7 +57,7 @@ All configuration is **build-time only**. To point the app at your own environme
    - `accessToken`: the access key. It is sent as a bearer token on every request (Moya `AccessTokenPlugin`) and as the `token` query parameter of the web sign-in URL.
    - `pathForAuthorization`: the page opened for the browser-based sign-in, relative to the base URL. The default `fido2-test.html` is the Authentication Cloud Test & Debug page.
 
-   With empty values the screen shows a configuration error, and every request fails.
+   Empty `host` or `accessToken` values are not rejected by the configuration loader; native requests fail later rather than showing a configuration error during loading.
 2. **Associated domain.** In `FIDO2/Resource/FIDO2-Example.entitlements`, complete `webcredentials:` to `webcredentials:<host>` (the relying party ID). If the relying party is your own domain, that domain must serve the `apple-app-site-association` file with `<TeamID>.<BundleID>` under `webcredentials`. For a domain that Apple's CDN can't reach during development, append `?mode=developer` to the entry, and remove it before distributing the app.
 3. **Web sign-in callback scheme.** In `FIDO2/Resource/FIDO2-Example-Info.plist`, change the first `CFBundleURLSchemes` entry (`fido2.example.app`). `Bundle+UrlScheme` reads the **first** scheme; it is passed to the page as `redirectTo` and used as the `callbackURLScheme` of `ASWebAuthenticationSession`. The page must redirect to `<scheme>://success?token=<jwt>` or `<scheme>://failure?error=<message>` (parsed in `AuthorizationServiceImpl.startWeb`).
 4. **Bundle ID and signing.** The bundle ID is `ch.nevis.mobile.authentication.fido2.example`, signing is automatic, and no development team is set. Set your own team; the team must support the Associated Domains capability. If you change the bundle ID or team, the `apple-app-site-association` entry (`<TeamID>.<BundleID>`) must change too, or the system rejects every passkey request for the relying party.
@@ -83,7 +83,7 @@ xcrun swift-format lint --configuration .swift-format --recursive FIDO2
 bundle install && bundle exec rubocop -c .rubocop.yml
 ```
 
-Requirements: Xcode 16 or later (Swift 6 language mode). Deployment target: iOS 16.4, iPhone and iPad. There is no "Swift Format" build phase, so formatting is not applied automatically; run `swift-format format --in-place` yourself or fix the lint findings. There are no unit or UI test targets; to verify changes, run the app on a device against an Authentication Cloud instance.
+Requirements: Xcode 26 or later (Swift 6 language mode). Deployment target: iOS 16.4, iPhone and iPad. There is no "Swift Format" build phase, so formatting is not applied automatically; run `swift-format format --in-place` yourself or fix the lint findings. There are no unit or UI test targets; to verify changes, run the app on a device against an Authentication Cloud instance.
 
 ## Architecture
 

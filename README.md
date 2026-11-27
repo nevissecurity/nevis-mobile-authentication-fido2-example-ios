@@ -69,7 +69,7 @@ Before you start compiling and using the example application please ensure you h
 Your development setup has to meet the following prerequisites:
 
 * iOS 16.4 or later
-* Xcode 16+, including Swift 6.0+
+* Xcode 26+, including Swift 6.0+
 
 ## Passkeys Support
 
