@@ -55,6 +55,13 @@ Style/RescueStandardError:
   Description: 'Checks for rescuing StandardError.'
   EnforcedStyle: implicit
 
+# Lint Cops
+
+Lint/ConstantDefinitionInBlock:
+  Description: 'Checks for constant definition in blocks.'
+  Exclude:
+    - 'fastlane/Fastfile'
+
 # Metrics Cops
 
 Metrics/AbcSize:
@@ -63,6 +70,8 @@ Metrics/AbcSize:
 
 Metrics/BlockLength:
   Description: 'Checks if the length of a block exceeds some maximum value.'
+  AllowedMethods:
+    - platform
   Max: 50
 
 Metrics/MethodLength:

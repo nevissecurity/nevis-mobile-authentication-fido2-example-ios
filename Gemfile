@@ -10,7 +10,7 @@ gem "csv"
 gem "ostruct"
 
 group :development do
-	gem "rubocop", "~> 1.82.1", require: false
+	gem "rubocop", "~> 1.93.0", require: false
 end
 
 plugins_path = File.join(File.dirname(__FILE__), "fastlane", "Pluginfile")
